@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trip List</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>List of Trips</h1>
+    <ul>
+        {% for trip in trips %}
+            <li>{{ trip }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

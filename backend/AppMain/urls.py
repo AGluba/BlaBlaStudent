@@ -1,5 +1,5 @@
 """
-URL configuration for sumatyw project.
+URL configuration for AppMain project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -17,7 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from backend.AppMain.BlaBlaStudent import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/users/', views.UserListCreateAPIView.as_view(), name='user-list-create'),
+    path('api/trips/', views.TripListCreateAPIView.as_view(), name='trip-list-create'),
+    path('api/ratings/', views.RatingListCreateAPIView.as_view(), name='rating-list-create'),
+
 ]

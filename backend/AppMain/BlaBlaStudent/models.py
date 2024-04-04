@@ -78,3 +78,124 @@ class Profile(models.Model):
     def update_profile(self):
         # Update the profile
         return
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    date = models.DateTimeField()
+    is_read = models.BooleanField(default=False)
+    id = models.AutoField(primary_key=True)
+
+    def mark_as_read(self):
+        # Mark the notification as read
+        return
+
+    def send_notification(self):
+        # Send the notification
+        return
+
+class Authentication(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100)
+    expiration_date = models.DateTimeField()
+
+    def generate_token(self):
+        # Generate a token
+        return
+
+    def validate_token(self):
+        # Validate the token
+        return
+
+    def refresh_token(self):
+        # Refresh the token
+        return
+
+    def login_user(self):
+        # Login the user
+        return
+
+    def logout_user(self):
+        # Logout the user
+        return
+
+    def register_user(self):
+        # Register the user
+        return
+
+    def reset_password(self):
+        # Reset the user's password
+        return
+
+class Advertisement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    date = models.DateTimeField()
+    id = models.AutoField(primary_key=True)
+    trip_id = models.ForeignKey(Trip, on_delete=models.CASCADE)
+
+    def update_advertisement(self):
+        # Update the advertisement
+        return
+
+    def delete_advertisement(self):
+        # Delete the advertisement
+        return
+
+    def create_advertisement(self):
+        advertisement = Advertisement()
+        return advertisement
+
+class MapIntegration(models.Model):
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    map_url = models.URLField()
+    id = models.AutoField(primary_key=True)
+
+    def update_map_url(self):
+        # Update the map URL
+        return
+
+    def get_map_url(self):
+        # Get the map URL
+        return
+
+class Friend(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name='friends')
+    id = models.AutoField(primary_key=True)
+
+    def add_friend(self):
+        # Add a friend
+        return
+
+    def remove_friend(self):
+        # Remove a friend
+        return
+
+    def get_friends(self):
+        # Get friends
+        return
+
+class GroupTrip(models.Model):
+    name = models.CharField(max_length=100)
+    date = models.DateField()
+    id = models.AutoField(primary_key=True)
+    users = models.ManyToManyField(User)
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+
+    def add_user(self, user):
+        # Add a user to the group trip
+        return
+
+    def remove_user(self, user):
+        # Remove a user from the group trip
+        return
+
+    def update_group_trip(self):
+        # Update the group trip
+        return
+
+    def delete_group_trip(self):
+        # Delete the group trip
+        return

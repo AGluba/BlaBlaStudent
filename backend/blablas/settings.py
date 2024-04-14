@@ -77,12 +77,11 @@ DATABASES = {
 }
 
 EMAIL_BACKEND = config('EMAIL_BACKEND')
-MAILER_EMAIL_BACKEND = config('MAILER_EMAIL_BACKEND')
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 
 REST_FRAMEWORK = {
@@ -118,16 +117,16 @@ DJOSER = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.blablas.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.blablas.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.blablas.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.blablas.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 

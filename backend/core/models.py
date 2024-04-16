@@ -6,7 +6,7 @@ class UserAccountManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def create_user(self, email, first_name, last_name, username, password=None, image=None, **extra_fields):
+    def create_user(self, email, first_name, last_name, username, password=None, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -22,9 +22,6 @@ class UserAccountManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, first_name=first_name, last_name=last_name, username=username)
         user.set_password(password)
-
-        if image:
-            user.image = image
 
         user.save()
         return user
@@ -48,6 +45,7 @@ class User(AbstractUser):
     status = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='images/', null=True)
 
     objects = UserAccountManager()
 
@@ -57,9 +55,4 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
-
-class Pictures(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pictures')
-    image = models.BinaryField(blank=True, null=True)
 

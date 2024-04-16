@@ -1,38 +1,32 @@
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-
 User = get_user_model()
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
-    image = serializers.ImageField(required=False)
-
     class Meta(BaseUserCreateSerializer.Meta):
+        model = User
         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'image']
         extra_kwargs = {'password': {'write_only': True}, }
 
     def create(self, validated_data):
         image = validated_data.pop('image', None)
-        user = super().create(validated_data)
+        user = User.objects.create_user(**validated_data)
 
         if image:
             user.image = image
             user.save()
-
         else:
             user.save()
-
         return user
 
 
 class UserSerializer(BaseUserSerializer):
-    image = serializers.ImageField(source='profile_picture.url', read_only=True)
 
     class Meta(BaseUserCreateSerializer.Meta):
-        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'is_active', 'status', 'image']
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'is_active', 'status']
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     def validate(self, attrs):

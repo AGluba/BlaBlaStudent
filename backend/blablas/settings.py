@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'core',
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +74,8 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -157,5 +160,4 @@ AUTH_USER_MODEL = 'core.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-DOMAIN = 'localhost:5173'
 SITE_NAME = 'Blablas'

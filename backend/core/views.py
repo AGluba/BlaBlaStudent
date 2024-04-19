@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,10 +33,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(username=request.data.get('username'))
+            user = User.objects.get(email=request.data.get('email'))
             if not user.is_active:
                 return Response({'detail': 'Account not activated'}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
-            return Response({'error': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)

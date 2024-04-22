@@ -6,7 +6,7 @@ from backend.core.models import User
 
 class TravelOfferManager(models.Manager):
     @staticmethod
-    def Validation(title, description, price, date, place_departure, place_arrival, number_of_seats, user_id):
+    def Validation(title, description, price, date, place_departure, place_arrival, number_of_seats):
         if not title:
             raise ValueError('Travel offer must have a title')
         if not description:
@@ -21,9 +21,7 @@ class TravelOfferManager(models.Manager):
             raise ValueError('Travel offer must have a place arrival')
         if not number_of_seats:
             raise ValueError('Travel offer must have a number of seats')
-        if not user_id:
-            raise ValueError('Travel offer must have a user id')
-        if not User.objects.filter(id=user_id).exists():
+        if not User.objects.filter(id=User.username).exists():
             raise ValueError('User does not exist')
         if number_of_seats <= 0:
             raise ValueError('Number of seats must be greater than 0')
@@ -38,9 +36,8 @@ class TravelOfferManager(models.Manager):
         if not isinstance(price, float):
             raise ValueError('Price must be a float')
 
-    def create_travel_offer(self, title, description, price, date, place_departure, place_arrival, number_of_seats,
-                            user_id):
-        self.validation(title, description, price, date, place_departure, place_arrival, number_of_seats, user_id)
+    def create_travel_offer(self, title, description, price, date, place_departure, place_arrival, number_of_seats):
+        self.validation(title, description, price, date, place_departure, place_arrival, number_of_seats)
         travel_offer = self.model(
             title=title,
             description=description,
@@ -49,7 +46,7 @@ class TravelOfferManager(models.Manager):
             place_departure=place_departure,
             place_arrival=place_arrival,
             number_of_seats=number_of_seats,
-            user_id=user_id
+            user_id=User.username
         )
         travel_offer.status = True
         travel_offer.save()
@@ -83,6 +80,33 @@ class TravelOfferManager(models.Manager):
         travel_offer.save()
 
         return travel_offer
+
+    def get_travel_offer(self, id):
+        return self.get(id=id)
+
+    def get_travel_offers(self):
+        return self.all()
+
+    def get_travel_offers_by_user(self, user_id):
+        return self.filter(user_id=user_id)
+
+    def get_active_travel_offers(self):
+        return self.filter(status=True)
+
+    def get_travel_offers_by_place_departure(self, place_departure):
+        return self.filter(place_departure=place_departure)
+
+    def get_travel_offers_by_place_arrival(self, place_arrival):
+        return self.filter(place_arrival=place_arrival)
+
+    def get_travel_offers_by_date(self, date):
+        return self.filter(date_departure=date)
+
+    def get_travel_offers_by_price(self, price):
+        return self.filter(price=price)
+
+    def get_travel_offers_by_number_of_seats(self, number_of_seats):
+        return self.filter(number_of_seats=number_of_seats)
 
 class TravelOffer(models.Model):
     id = models.AutoField(primary_key=True)

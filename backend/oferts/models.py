@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from backend.core.models import User
-
+from core.models import User
 
 class TravelOfferManager(models.Manager):
     @staticmethod
@@ -110,7 +109,7 @@ class TravelOfferManager(models.Manager):
 
 class TravelOffer(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey('backend.core.models.User', on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()

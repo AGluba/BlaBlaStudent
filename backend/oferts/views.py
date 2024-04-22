@@ -5,4 +5,3 @@ from .serializers import TravelOfferSerializer
 class TravelOfferViewSet(viewsets.ModelViewSet):
     queryset = TravelOffer.objects.all()
     serializer_class = TravelOfferSerializer
-

@@ -32,6 +32,7 @@ class UserAccountManager(BaseUserManager):
                                 username=username, password=password, **extra_fields)
 
         user.is_superuser = True
+        user.is_active = True
         user.is_staff = True
         user.save()
 
@@ -56,4 +57,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-

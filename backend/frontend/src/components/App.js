@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, Routes, Link, Redirect } from 'react-ro
 import HomePage from './HomePage';
 import Register from "./Register";
 import Login from "./Login";
+import CreateOfferForm from "./CreateOffer";
+import SearchTravelOffersForm from "./SearchTravelOffersForm";
+
 
 
 const App = () => {
@@ -13,6 +16,8 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/offers" element={<CreateOfferForm />} />
+            <Route path="/offers/search" element={<SearchTravelOffersForm />} />
         </Routes>
       </Router>
   );

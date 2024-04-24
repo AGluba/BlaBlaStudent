@@ -49,7 +49,7 @@ export default function Register() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
       <AppBar position="static" sx={{ borderRadius: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

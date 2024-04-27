@@ -10,7 +10,7 @@ admin.site.index_title = 'Admin'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('offers.urls')),
-    path('activate/', include('core.urls')),
+    path('account/', include('core.urls')),
     path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='custom_jwt_create'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

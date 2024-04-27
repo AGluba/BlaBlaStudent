@@ -49,15 +49,14 @@ class UserSerializer(BaseUserSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
         obj = self.user
-
         data.update({
-            'id': obj.id, 'first_name': obj.first_name,
-            'last_name': obj.last_name, 'email': obj.email,
+            'id': obj.id,
+            'first_name': obj.first_name,
+            'last_name': obj.last_name,
+            'email': obj.email,
             'username': obj.username,
             'is_active': obj.is_active,
             'status': obj.status,
         })
-
         return data

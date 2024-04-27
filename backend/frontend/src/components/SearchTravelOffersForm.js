@@ -29,7 +29,7 @@ export default function SearchTravelOffersForm() {
 
   const fetchTravelOffers = async () => {
     try {
-      const response = await axios.get('api/offers');
+      const response = await axios.get('api/offers/');
       setOffers(response.data);
       setNoOffers(response.data.length === 0);
     } catch (error) {
@@ -45,7 +45,7 @@ export default function SearchTravelOffersForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get('offers/search', { params: formData });
+      const response = await axios.get('/api/offers/', { params: formData });
       setOffers(response.data);
       setNoOffers(response.data.length === 0);
     } catch (error) {
@@ -123,7 +123,7 @@ export default function SearchTravelOffersForm() {
                   <Typography variant="body1" gutterBottom>
                     Brak dostępnych ofert podróży. Chcesz dodać nową ofertę?
                   </Typography>
-                  <Button component={Link} to="/offers" variant="outlined" color="primary">
+                  <Button component={Link} to="/add-offers" variant="outlined" color="primary">
                     Dodaj nową ofertę
                   </Button>
                 </Box>

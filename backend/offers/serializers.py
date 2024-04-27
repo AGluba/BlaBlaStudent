@@ -9,21 +9,17 @@ class TravelOfferSerializer(serializers.ModelSerializer):
                   'number_of_seats']
 
     def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
         travel_offer = TravelOffer.objects.create_travel_offer(**validated_data)
         return travel_offer
 
-# class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-#     def validate(self, attrs):
-#         data = super().validate(attrs)
-#
-#         obj = self.user
-#
-#         data.update({
-#             'id': obj.id, 'first_name': obj.first_name,
-#             'last_name': obj.last_name, 'email': obj.email,
-#             'username': obj.username,
-#             'is_active': obj.is_active,
-#             'status': obj.status,
-#         })
-#
-#         return data
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.price = validated_data.get('price', instance.price)
+        instance.date_departure = validated_data.get('date_departure', instance.date_departure)
+        instance.place_departure = validated_data.get('place_departure', instance.place_departure)
+        instance.place_arrival = validated_data.get('place_arrival', instance.place_arrival)
+        instance.number_of_seats = validated_data.get('number_of_seats', instance.number_of_seats)
+        instance.save()
+        return instance

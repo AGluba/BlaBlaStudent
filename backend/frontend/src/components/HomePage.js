@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container, Grid, Box, CssBaseline } from '@mui/material';
@@ -6,6 +6,8 @@ import { DirectionsCar, Wallet, Handshake } from '@mui/icons-material';
 import AccountMenu from './AccountMenu';
 
 const HomePage = () => {
+  const storedUser = JSON.parse(localStorage.getItem('user_data'));
+
   return (
     <div>
       <CssBaseline />
@@ -15,6 +17,9 @@ const HomePage = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             BlaBlaS
           </Typography>
+            <Typography variant="h6" component="div" sx={{marginRight: '20px'}}>
+              {/*{`Witaj, ${storedUser.username}`}*/}
+            </Typography>
           <Button component={Link} to='/' color="inherit">Strona główna</Button>
           <AccountMenu></AccountMenu>
         </Toolbar>
@@ -26,7 +31,7 @@ const HomePage = () => {
           <Typography paragraph>Podróżuj z innymi studentami dzięki BlaBlaS.</Typography>
           <Typography paragraph>Dołącz do naszej społeczności już dzisiaj!</Typography>
           <Button sx={{ marginTop: '20px', borderRadius: '10px' }} variant="contained" color="primary" component={Link} to='/register'>Założ konto</Button>
-          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers'>Dodaj ofertę</Button>
+          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/add-offers'>Dodaj ofertę</Button>
           <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers/search'>Szukaj ofert</Button>
         </Container>
       </section>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,52 +14,49 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {AppBar, Toolbar} from "@mui/material";
 import AccountMenu from './AccountMenu';
-import InputFileUpload from "./InputFileUpload";
-import axios from 'axios';
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import InputFileUpload from './InputFileUpload';
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
 
 export default function Register() {
-    const [selectedFile, setSelectedFile] = useState(null);
+  const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const defaultTheme = createTheme();
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
   };
-  const handleSubmit = async (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      data.append('image', selectedFile);
-      console.log({
-          email: data.get('email'),
-          password: data.get('password'),
-            username: data.get('username'),
-            firstName: data.get('first_name'),
-            lastName: data.get('last_name'),
-          uploadedFile: data.get('image')
-      });
-      try {
-          const response = await axios.post('/auth/users/', data);
-          console.log(response.data);
-      } catch (error) {
-          console.error('Błąd podczas wysyłania danych:', error);
-      }
-  };
+
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  data.append('image', selectedFile);
+  console.log(Array.from(data.entries()));
+  try {
+    const response = await axios.post('/auth/users/', data);
+    console.log('Response:', response);
+    navigate('/registration-confirmation');
+  } catch (error) {
+    console.error('Response Error:', error.response);
+  }
+};
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-      <AppBar position="static" sx={{ borderRadius: '10px' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            BlaBlaS
-          </Typography>
-          <Button component={Link} to='/' color="inherit">Strona główna</Button>
-          <AccountMenu></AccountMenu>
-        </Toolbar>
-      </AppBar>
-        </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+        <AppBar position="static" sx={{ borderRadius: '10px' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              BlaBlaS
+            </Typography>
+            <Button component={Link} to='/' color="inherit">Strona główna</Button>
+            <AccountMenu />
+          </Toolbar>
+        </AppBar>
+      </Box>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -72,27 +69,27 @@ export default function Register() {
         >
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="first_name"
-                  required
-                  fullWidth
-                  id="first_name"
-                  label="Imię"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="last_name"
-                  label="Nazwisko"
-                  name="last_name"
-                  autoComplete="family-name"
-                />
-              </Grid>
+             <Grid item xs={12} sm={6}>
+  <TextField
+    autoComplete="given-name"
+    name="first_name"
+    required
+    fullWidth
+    id="first_name"
+    label="Imię"
+    autoFocus
+  />
+</Grid>
+<Grid item xs={12} sm={6}>
+  <TextField
+    required
+    fullWidth
+    id="last_name"
+    label="Nazwisko"
+    name="last_name"
+    autoComplete="family-name"
+  />
+</Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -103,7 +100,7 @@ export default function Register() {
                   autoComplete="email"
                 />
               </Grid>
-               <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -125,7 +122,7 @@ export default function Register() {
                   autoComplete="new-password"
                 />
               </Grid>
-               <Grid item xs={12}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -136,7 +133,7 @@ export default function Register() {
                   autoComplete="new-password"
                 />
               </Grid>
-               <Grid item xs={12}>
+              <Grid item xs={12}>
                 <InputFileUpload onFileSelect={handleFileSelect}/>
               </Grid>
             </Grid>
@@ -150,22 +147,19 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={Link} to='/login' variant="body2">
-                  Masz już konto? Zaloguj się
-                </Link>
+                <Link to='/login' variant="body2">Masz już konto? Zaloguj się</Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
         <footer>
-        <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
-          <Typography variant="body2" color="text.secondary">
-            {'Wszelkie prawa zastrzeżone © '}
-            BlaBlaS&nbsp;
-            {new Date().getFullYear()}
-          </Typography>
-        </Container>
-      </footer>
+          <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
+            <Typography variant="body2" color="text.secondary">
+              {'Wszelkie prawa zastrzeżone © '}
+              BlaBlaS {new Date().getFullYear()}
+            </Typography>
+          </Container>
+        </footer>
       </Container>
     </ThemeProvider>
   );

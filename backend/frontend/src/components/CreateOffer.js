@@ -14,6 +14,8 @@ import AccountMenu from './AccountMenu';
 const defaultTheme = createTheme();
 
 export default function CreateOfferForm() {
+  const storedUser = JSON.parse(localStorage.getItem('user_data'));
+  const token = localStorage.getItem('access_token');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -34,7 +36,12 @@ export default function CreateOfferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('api/offers-add', formData);
+      await axios.post('api/offers-add/', formData, {
+        headers: {
+          'Authorization': `JWT ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       navigate('offers/search');
     } catch (error) {
       console.error('Błąd podczas wysyłania danych:', error);

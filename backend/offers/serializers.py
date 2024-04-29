@@ -14,12 +14,11 @@ class TravelOfferSerializer(serializers.ModelSerializer):
         return travel_offer
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.price = validated_data.get('price', instance.price)
-        instance.date_departure = validated_data.get('date_departure', instance.date_departure)
-        instance.place_departure = validated_data.get('place_departure', instance.place_departure)
-        instance.place_arrival = validated_data.get('place_arrival', instance.place_arrival)
-        instance.number_of_seats = validated_data.get('number_of_seats', instance.number_of_seats)
-        instance.save()
-        return instance
+        validated_data['user'] = self.context['request'].user
+        travel_offer = TravelOffer.objects.update_travel_offer(instance.id, **validated_data)
+        return travel_offer
+
+    def delete(self, instance, validated_data):
+        validated_data['user'] = self.context['request'].user
+        travel_offer = TravelOffer.objects.delete_travel_offer(instance.id)
+        return travel_offer

@@ -3,21 +3,26 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from 'react-router-dom';
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const storedUser = JSON.parse(localStorage.getItem('user_data'));
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user_data');
+    navigate('/');
   };
 
   return (
@@ -33,7 +38,6 @@ export default function AccountMenu() {
             aria-expanded={open ? 'true' : undefined}
           >
             <Avatar sx={{ width: 40, height: 40, backgroundColor: 'CornFlowerBlue' }}>{"M"}</Avatar>
-              {/*storedUser.username && storedUser.username.charAt(0).toUpperCase()*/}
           </IconButton>
         </Tooltip>
       </Box>
@@ -69,16 +73,29 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to="/profile" onClick={handleClose}>
-          <Avatar /> Mój profil
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Konto
-        </MenuItem>
-        <Divider />
-        <MenuItem component={Link} to='/login' sx={{textAlign: 'center'}}>
-          Zaloguj się
-        </MenuItem>
+        {storedUser ? (
+          <>
+            <MenuItem component={Link} to="/profile">
+              <Avatar /> Mój profil
+            </MenuItem>
+            <MenuItem component={Link} to="/my-offers">
+              <Avatar /> Moje oferty
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <Avatar /> Wyloguj się
+            </MenuItem>
+          </>
+        ) : (
+          <>
+            <MenuItem component={Link} to='/login' sx={{ textAlign: 'center' }}>
+              Zaloguj się
+            </MenuItem>
+            <MenuItem component={Link} to='/register' sx={{ textAlign: 'center' }}>
+              Zarejestruj się
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </div>
   );

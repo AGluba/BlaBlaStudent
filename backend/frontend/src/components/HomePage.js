@@ -31,7 +31,7 @@ const HomePage = () => {
           <Typography paragraph>Podróżuj z innymi studentami dzięki BlaBlaS.</Typography>
           <Typography paragraph>Dołącz do naszej społeczności już dzisiaj!</Typography>
           <Button sx={{ marginTop: '20px', borderRadius: '10px' }} variant="contained" color="primary" component={Link} to='/register'>Założ konto</Button>
-          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/add-offers'>Dodaj ofertę</Button>
+          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers'>Dodaj ofertę</Button>
           <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers/search'>Szukaj ofert</Button>
         </Container>
       </section>

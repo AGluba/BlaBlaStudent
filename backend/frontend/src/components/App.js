@@ -9,6 +9,8 @@ import AccountActivation from './AccountActivation';
 import RegistrationConfirmation from './RegistrationConfirmation';
 import CreateOfferForm from './CreateOffer';
 import SearchTravelOffersForm from './SearchTravelOffersForm';
+import MyOffersPage from './MyOffersPage';
+import EditOfferPage from "./EditOfferPage";
 
 
 
@@ -22,8 +24,10 @@ const App = () => {
             <Route path='/profile' element={<Profile />} />
             <Route path="/registration-confirmation" element={<RegistrationConfirmation/>} />
             <Route path="/activation-success" element={<AccountActivation />} />
-            <Route path="/add-offers" element={<CreateOfferForm />} />
+            <Route path="/offers" element={<CreateOfferForm />} />
             <Route path="/offers/search" element={<SearchTravelOffersForm />} />
+            <Route path="/my-offers" element={<MyOffersPage />} />
+            <Route path="offers/edit/:id" element={<EditOfferPage />} />
         </Routes>
       </Router>
   );

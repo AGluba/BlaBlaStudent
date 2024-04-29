@@ -4,17 +4,24 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
 const TravelOfferCard = ({ offer }) => {
+const departureDate = new Date(offer.date_departure).toLocaleString([], { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   return (
     <Card>
       <CardContent>
         <Typography variant="h5" component="h2">
           {offer.title}
         </Typography>
-        <Typography color="textSecondary" gutterBottom>
-          {offer.date_departure} - {offer.place_departure} to {offer.place_arrival}
+        <Typography variant="h6" component="p">
+          Miejsce wyjazdu: {offer.place_departure}
         </Typography>
-        <Typography variant="body2" component="p">
-          {offer.description}
+        <Typography variant="h6" component="p">
+          Miejsce docelowe: {offer.place_arrival}
+        </Typography>
+        <Typography variant="h6" component="p">
+          Data wyjazdu: {departureDate}
+        </Typography>
+        <Typography variant="h6" component="p">
+          Opis: {offer.description}
         </Typography>
         <Typography variant="h6" component="p">
           Cena: {offer.price} zł

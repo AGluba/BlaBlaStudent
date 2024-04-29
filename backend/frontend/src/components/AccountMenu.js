@@ -15,7 +15,6 @@ export default function AccountMenu() {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const handleClick = (event) => {
-      console.log(storedUser);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

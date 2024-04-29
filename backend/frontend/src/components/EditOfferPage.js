@@ -1,32 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import { AppBar, Toolbar, Typography } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import AccountMenu from './AccountMenu';
+import {Link, useParams, useNavigate} from 'react-router-dom';
+import { Container, Typography, Box, Button, TextField, Grid, AppBar, Toolbar } from '@mui/material';
+import AccountMenu from "./AccountMenu";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 
-const defaultTheme = createTheme();
-
-export default function CreateOfferForm() {
-  const storedUser = JSON.parse(localStorage.getItem('user_data'));
-  const token = localStorage.getItem('access_token');
+const EditOfferPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const defaultTheme = createTheme();
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
-    price: '',
-    date_departure: '',
     place_departure: '',
     place_arrival: '',
+    date_departure: '',
+    description: '',
+    price: '',
     number_of_seats: ''
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchOffer(id).then(r => {});
+  }, [id]);
+
+  const fetchOffer = async (id) => {
+    try {
+      const response = await axios.get(`/api/offers/${id}`);
+      setFormData(response.data);
+    } catch (error) {
+      console.error('Błąd podczas pobierania oferty:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,16 +40,10 @@ export default function CreateOfferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('api/offers-add/', formData, {
-        headers: {
-          'Authorization': `JWT ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      //TODO:: zamienić na strone z komunikatem o powodzeniu dodania oferty, i możliwością dodania kolejnej lub wyszukania ofert
-      navigate('search/');
+      await axios.put(`/api/offers/${id}/`, formData);
+      navigate('/my-offers');
     } catch (error) {
-      console.error('Błąd podczas wysyłania danych:', error);
+      console.error('Błąd podczas edycji oferty:', error);
     }
   };
 
@@ -64,10 +62,10 @@ export default function CreateOfferForm() {
           </Toolbar>
         </AppBar>
       </Box>
-      <Container component="main" maxWidth="md">
-        <Box sx={{marginTop: 8}}>
+      <Container maxWidth="md">
+        <Box sx={{ my: 4 }}>
           <Typography variant="h4" gutterBottom>
-            Dodaj ofertę podróży
+            Edytuj ofertę podróży
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
@@ -145,20 +143,19 @@ export default function CreateOfferForm() {
                     onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                >
-                  Dodaj ofertę
-                </Button>
-              </Grid>
             </Grid>
+            <Box sx={{ mt: 2 }}>
+              <Button type="submit" variant="contained" color="primary">
+                Zapisz zmiany
+              </Button>
+              <Button component={Link} to="/my-offers" variant="outlined" sx={{ ml: 2 }}>
+                Anuluj
+              </Button>
+            </Box>
           </form>
         </Box>
         <footer>
-          <Container sx={{textAlign: 'center', marginTop: '15vh'}}>
+          <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
             <Typography variant="body2" color="text.secondary">
               {'Wszelkie prawa zastrzeżone © '}
               BlaBlaS&nbsp;
@@ -169,4 +166,6 @@ export default function CreateOfferForm() {
       </Container>
     </ThemeProvider>
   );
-}
+};
+
+export default EditOfferPage;

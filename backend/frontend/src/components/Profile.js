@@ -1,67 +1,114 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { Link } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {AppBar, Toolbar} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Typography, Button, Container, TextField, Box, Snackbar, Alert, createTheme, ThemeProvider } from '@mui/material';
 import AccountMenu from './AccountMenu';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-import axios from "axios";
-
-// Definicja motywu, jeśli używasz motywów MUI
 const defaultTheme = createTheme();
 
 const Profile = () => {
+  const [user, setUser] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    username: ''
+  });
+  const [edit, setEdit] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user_data'));
+    if (storedUser) {
+      setUser({
+        first_name: storedUser.first_name || '',
+        last_name: storedUser.last_name || '',
+        email: storedUser.email || '',
+        username: storedUser.username || ''
+      });
+    }
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUser(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await axios.put('http://localhost:8000/api/user/update/', {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        username: user.username
+      }, {
+        headers: {
+          'Authorization': `JTW ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      localStorage.setItem('user_data', JSON.stringify(response.data));
+      setSnackbarMessage('Profile updated successfully');
+      setSnackbarOpen(true);
+      setEdit(false);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Token may be invalid or expired');
+        setSnackbarMessage('Failed to update profile: Unauthorized');
+      } else {
+        console.error('Failed to update profile', error);
+        setSnackbarMessage('Failed to update profile');
+      }
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = (_, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-        <AppBar position="static" sx={{ borderRadius: '10px' }}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              BlaBlaS
-            </Typography>
-            <Button component={Link} to="/" color="inherit">Strona główna</Button>
-            <AccountMenu />
-          </Toolbar>
-        </AppBar>
-      </Box>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Profil użytkownika
-          </Typography>
-          <Typography component="p">
-            {/* Tutaj dodaj resztę zawartości swojej strony profilu */}
-            To jest strona profilu. Tutaj możesz dodać więcej informacji o użytkowniku.
-          </Typography>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>BlaBlaS</Typography>
+          <Button component={Link} to="/" color="inherit">Strona główna</Button>
+          <AccountMenu />
+        </Toolbar>
+      </AppBar>
+      <Container component="main" maxWidth="sm">
+        <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {['first_name', 'last_name', 'email', 'username'].map(key => (
+            <TextField
+              key={key}
+              margin="normal"
+              fullWidth
+              label={key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}
+              name={key}
+              value={user[key]}
+              onChange={handleChange}
+              disabled={!edit}
+            />
+          ))}
+          <Button
+            sx={{ mt: 2 }}
+            variant="contained"
+            onClick={edit ? handleUpdate : () => setEdit(true)}
+          >
+            {edit ? 'Save Changes' : 'Edit Profile'}
+          </Button>
         </Box>
-        <footer>
-          <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
-            <Typography variant="body2" color="text.secondary">
-              {'Wszelkie prawa zastrzeżone © '}
-              BlaBlaS&nbsp;
-              {new Date().getFullYear()}
-            </Typography>
-          </Container>
-        </footer>
       </Container>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 };

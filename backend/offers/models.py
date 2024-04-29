@@ -31,7 +31,6 @@ class TravelOfferManager(models.Manager):
             place_departure=place_departure,
             place_arrival=place_arrival,
             number_of_seats=number_of_seats,
-            # user_id=User.username,
             user_id=user.id,
             status=True
         )
@@ -40,8 +39,8 @@ class TravelOfferManager(models.Manager):
         return travel_offer
 
     def update_travel_offer(self, id, title, description, price, date_departure, place_departure, place_arrival,
-                            number_of_seats):
-        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats)
+                            number_of_seats, user):
+        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user)
         travel_offer = self.get(id=id)
         travel_offer.title = title
         travel_offer.description = description

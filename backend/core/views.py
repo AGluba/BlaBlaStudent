@@ -8,6 +8,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 
 User = get_user_model()
+from django.http import HttpResponseRedirect
+from rest_framework import permissions
+import requests
 
 
 @api_view(['POST'])
@@ -50,3 +53,35 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def your_activation_view(request, uid, token):
+    djoser_url = 'http://localhost:8000/auth/users/activation/'
+    payload = {'uid': uid, 'token': token}
+    response = requests.post(djoser_url, data=payload)
+    if response.status_code == 204:
+        return HttpResponseRedirect('http://localhost:8000/activation-success')
+    else:
+        print("Error:", response.text)
+        return Response({'error': 'Activation failed.'}, status=response.status_code)
+
+@api_view(['PUT'])
+@permission_classes([permissions.IsAuthenticated])
+def update_user_profile(request):
+    user = request.user
+    data = request.data
+    user.first_name = data.get('first_name', user.first_name)
+    user.last_name = data.get('last_name', user.last_name)
+    user.email = data.get('email', user.email)
+    user.save()
+
+    return Response({
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'username': user.username,
+        'is_active': user.is_active,
+        'status': user.status
+    }, status=status.HTTP_200_OK)

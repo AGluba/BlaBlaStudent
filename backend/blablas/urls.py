@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from core import views as core_views
 from frontend import urls as frontend_urls
-from offers.views import CustomTokenObtainPairView
+from core.views import CustomTokenObtainPairView
+from django.conf.urls.static import static
 
 
 admin.site.site_header = "Blablas"
@@ -19,4 +21,4 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('', include(frontend_urls)),
-]
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

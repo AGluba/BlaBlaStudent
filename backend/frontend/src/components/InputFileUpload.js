@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -15,7 +16,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function InputFileUpload({ onFileSelect }) {
+export default function InputFileUpload({ onFileSelect, label }) {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -23,7 +24,6 @@ export default function InputFileUpload({ onFileSelect }) {
     setSelectedFile(file);
     onFileSelect(file);
   };
-
   return (
     <div>
       <Button
@@ -33,14 +33,16 @@ export default function InputFileUpload({ onFileSelect }) {
         tabIndex={-1}
         startIcon={<CloudUploadIcon />}
       >
-        Załącz plik
+        {selectedFile ? (
+          <>
+            {label}
+            <CheckCircleIcon style={{ marginLeft: '5px', color: 'white' }} />
+          </>
+        ) : (
+          label
+        )}
         <VisuallyHiddenInput type="file" onChange={handleFileChange} />
       </Button>
-      {selectedFile && (
-        <div>
-          Wybrany plik: {selectedFile.name}
-        </div>
-      )}
     </div>
   );
 }

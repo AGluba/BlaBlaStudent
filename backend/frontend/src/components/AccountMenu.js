@@ -11,9 +11,11 @@ import {Link, useNavigate} from 'react-router-dom';
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const storedUser = JSON.parse(localStorage.getItem('user_data'));
+  const firstLetter = storedUser?.first_name ? storedUser.first_name.charAt(0) : '';
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const handleClick = (event) => {
+      console.log(storedUser);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -37,7 +39,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 40, height: 40, backgroundColor: 'CornFlowerBlue' }}>{"M"}</Avatar>
+            <Avatar sx={{ width: 40, height: 40, backgroundColor: 'CornFlowerBlue' }}>{firstLetter}</Avatar>
           </IconButton>
         </Tooltip>
       </Box>

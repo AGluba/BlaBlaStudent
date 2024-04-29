@@ -56,10 +56,17 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
-def your_activation_view(request, uid, token):
+def activate_user(request):
+    uid = request.GET.get('uid')
+    token = request.GET.get('token')
+
+    if not uid or not token:
+        return Response({'error': 'UID and token parameters are required.'}, status=400)
+
     djoser_url = 'http://localhost:8000/auth/users/activation/'
     payload = {'uid': uid, 'token': token}
     response = requests.post(djoser_url, data=payload)
+
     if response.status_code == 204:
         return HttpResponseRedirect('http://localhost:8000/activation-success')
     else:

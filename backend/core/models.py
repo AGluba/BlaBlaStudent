@@ -47,7 +47,9 @@ class User(AbstractUser):
     status = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='images/', null=True)
+    image_front = models.ImageField(upload_to='images/', null=True)
+    image_back = models.ImageField(upload_to='images/', null=True)
+    term_of_validity = models.DateTimeField(default=None, null=True)
 
     objects = UserAccountManager()
 

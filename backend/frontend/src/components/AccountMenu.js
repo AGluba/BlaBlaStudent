@@ -78,14 +78,14 @@ export default function AccountMenu() {
         {storedUser ? (
           <>
             <MenuItem component={Link} to="/profile">
-              <Avatar /> Mój profil
+ Mój profil
             </MenuItem>
             <MenuItem component={Link} to="/my-offers">
-              <Avatar /> Moje oferty
+ Moje oferty
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout}>
-              <Avatar /> Wyloguj się
+ Wyloguj się
             </MenuItem>
           </>
         ) : (

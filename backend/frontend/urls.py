@@ -8,6 +8,7 @@ urlpatterns = [
     path('profile', index),
     path('offers', index),
     path('offers/search', index),
+    path('registration-confirmation', index),
     path('activation-success', index),
     path('my-offers', index),
     path('offers/edit/<int:offerId>', index),

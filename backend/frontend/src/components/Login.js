@@ -11,11 +11,9 @@ const defaultTheme = createTheme();
 
 
 const Login = () => {
+  const [errors, setErrors] = useState({})
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,24 +30,16 @@ const Login = () => {
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       localStorage.setItem('user_data', JSON.stringify(userData));
-      setSnackbarMessage("Pomyślnie zalogowano!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
       navigate('/');
     } catch (error) {
       console.error('Błąd przy logowaniu:', error.response ? error.response.data : 'No response data');
-      setSnackbarMessage("Nieudane logowanie, sprawdź dane.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+        if (error.response && error.response.data) {
+            setErrors(error.response.data);
+        }
     }
   };
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -86,6 +76,8 @@ const Login = () => {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email && errors.email[0]}
             />
             <TextField
               margin="normal"
@@ -98,6 +90,8 @@ const Login = () => {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              error={!!errors.password}
+              helperText={errors.password && errors.password[0]}
             />
             <Button
               type="submit"
@@ -122,11 +116,6 @@ const Login = () => {
           </Box>
         </Box>
       </Container>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </ThemeProvider>
   );
 };

@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import {Typography} from "@mui/material";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -16,7 +17,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function InputFileUpload({ onFileSelect, label }) {
+export default function InputFileUpload({ onFileSelect, label, error, helperText }) {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -32,6 +33,7 @@ export default function InputFileUpload({ onFileSelect, label }) {
         variant="contained"
         tabIndex={-1}
         startIcon={<CloudUploadIcon />}
+        error={error}
       >
         {selectedFile ? (
           <>
@@ -43,6 +45,7 @@ export default function InputFileUpload({ onFileSelect, label }) {
         )}
         <VisuallyHiddenInput type="file" onChange={handleFileChange} />
       </Button>
+      {error && <Typography variant="body2" color="error">{helperText}</Typography>}
     </div>
   );
 }

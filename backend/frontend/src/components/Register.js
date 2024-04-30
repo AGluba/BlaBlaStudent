@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -20,9 +20,23 @@ import axios from 'axios';
 const defaultTheme = createTheme();
 
 export default function Register() {
+    const [errors, setErrors] = useState({})
     const [frontImage, setFrontImage] = useState(null);
     const [backImage, setBackImage] = useState(null);
+    const navigate = useNavigate();
 
+    const handleErrorMessage = (message) => {
+        if (message === "Istnieje już użytkownik z tą wartością pola email.") {
+            return "Istnieje już użytkownik z tym adresem.";
+        }
+        if (message === "Przesłane dane nie były plikiem. Sprawdź typ kodowania formatki.") {
+            return "Nie wybrano pliku."
+        }
+        if(message === "Istnieje już użytkownik z tą wartością pola username.") {
+            return "Istnieje już użytkownik z tą nazwą użytkownika."
+        }
+        return message;
+    }
     const handleFrontImageSelect = (file) => {
         setFrontImage(file);
     };
@@ -47,15 +61,18 @@ export default function Register() {
         });
         try {
             const response = await axios.post('/auth/users/', data);
-            console.log(response.data);
+            navigate('/registration-confirmation');
         } catch (error) {
-            console.error('Błąd podczas wysyłania danych:', error);
+            if (error.response && error.response.data) {
+                setErrors(error.response.data);
+            }
+            console.error('Błąd podczas rejestracji:', error);
         }
     };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
       <AppBar position="static" sx={{ borderRadius: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -87,6 +104,8 @@ export default function Register() {
                   id="first_name"
                   label="Imię"
                   autoFocus
+                  error={!!errors.first_name}
+                  helperText={errors.first_name && errors.first_name[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -97,6 +116,8 @@ export default function Register() {
                   label="Nazwisko"
                   name="last_name"
                   autoComplete="family-name"
+                  error={!!errors.last_name}
+                  helperText={errors.last_name && errors.last_name[0]}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -107,6 +128,8 @@ export default function Register() {
                   label="E-mail"
                   name="email"
                   autoComplete="email"
+                  error={!!errors.email}
+                  helperText={handleErrorMessage(errors.email && errors.email[0])}
                 />
               </Grid>
                <Grid item xs={12}>
@@ -118,9 +141,14 @@ export default function Register() {
                   type="text"
                   id="username"
                   autoComplete="username"
+                  error={!!errors.username}
+                  helperText={handleErrorMessage(errors.username && errors.username[0])}
                 />
               </Grid>
               <Grid item xs={12}>
+                  <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 1, textAlign: 'center' }}>
+                    Hasło musi zawierać conajmniej 8 znaków i jedną wielką literę.
+                  </Typography>
                 <TextField
                   required
                   fullWidth
@@ -129,6 +157,8 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  error={!!errors.password}
+                  helperText={errors.password && errors.password[0]}
                 />
               </Grid>
                <Grid item xs={12}>
@@ -143,10 +173,24 @@ export default function Register() {
                 />
               </Grid>
                <Grid item xs={12}>
-                   <InputFileUpload onFileSelect={handleFrontImageSelect} label="Zdjęcie przód legitymacji" />
+                   <InputFileUpload
+                       name="image_front"
+                       id="image_front"
+                       onFileSelect={handleFrontImageSelect}
+                       label="Zdjęcie przód legitymacji"
+                       error={!!errors.image_front}
+                       helperText={handleErrorMessage(errors.image_front && errors.image_front[0])}
+                   />
                </Grid>
                 <Grid item xs={12}>
-                    <InputFileUpload onFileSelect={handleBackImageSelect} label="Zdjęcie tył legitymacji" />
+                    <InputFileUpload
+                        name="image_back"
+                        id="image_back"
+                        onFileSelect={handleBackImageSelect}
+                        label="Zdjęcie tył legitymacji"
+                        error={!!errors.image_back}
+                        helperText={handleErrorMessage(errors.image_back && errors.image_back[0])}
+                    />
                 </Grid>
             </Grid>
             <Button

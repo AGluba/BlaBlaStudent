@@ -16,7 +16,7 @@ const defaultTheme = createTheme();
 const RegistrationConfirmation = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: 1 }}>
         <AppBar position="static" sx={{ borderRadius: '10px' }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

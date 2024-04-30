@@ -18,7 +18,7 @@ const HomePage = () => {
             BlaBlaS
           </Typography>
             <Typography variant="h6" component="div" sx={{marginRight: '20px'}}>
-              {/*{`Witaj, ${storedUser.username}`}*/}
+                Witaj, {storedUser ? storedUser.first_name : 'Gościu'}
             </Typography>
           <Button component={Link} to='/' color="inherit">Strona główna</Button>
           <AccountMenu></AccountMenu>

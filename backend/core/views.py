@@ -6,11 +6,11 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
-
-User = get_user_model()
 from django.http import HttpResponseRedirect
 from rest_framework import permissions
 import requests
+
+User = get_user_model()
 
 
 @api_view(['POST'])
@@ -54,6 +54,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
         return super().post(request, *args, **kwargs)
 
+
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
 def activate_user(request):
@@ -72,6 +73,7 @@ def activate_user(request):
     else:
         print("Error:", response.text)
         return Response({'error': 'Activation failed.'}, status=response.status_code)
+
 
 @api_view(['PUT'])
 @permission_classes([permissions.IsAuthenticated])

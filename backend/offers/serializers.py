@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import TravelOffer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class TravelOfferSerializer(serializers.ModelSerializer):
     class Meta:

@@ -8,6 +8,7 @@ from core.views import activate_user
 from django.conf.urls.static import static
 
 
+
 admin.site.site_header = "Blablas"
 admin.site.index_title = 'Admin'
 
@@ -22,4 +23,4 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('', include(frontend_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

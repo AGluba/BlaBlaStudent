@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container, Grid, Box, CssBaseline } from '@mui/material';
@@ -6,6 +6,8 @@ import { DirectionsCar, Wallet, Handshake } from '@mui/icons-material';
 import AccountMenu from './AccountMenu';
 
 const HomePage = () => {
+  const storedUser = JSON.parse(localStorage.getItem('user_data'));
+
   return (
     <div>
       <CssBaseline />
@@ -15,6 +17,9 @@ const HomePage = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             BlaBlaS
           </Typography>
+            <Typography variant="h6" component="div" sx={{marginRight: '20px'}}>
+              {/*{`Witaj, ${storedUser.username}`}*/}
+            </Typography>
           <Button component={Link} to='/' color="inherit">Strona główna</Button>
           <AccountMenu></AccountMenu>
         </Toolbar>

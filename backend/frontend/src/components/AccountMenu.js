@@ -1,26 +1,31 @@
-import * as React from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from 'react-router-dom';
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const storedUser = JSON.parse(localStorage.getItem('user_data'));
+  const firstLetter = storedUser?.first_name ? storedUser.first_name.charAt(0) : '';
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user_data');
+    navigate('/');
+  };
+
   return (
     <div>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -33,7 +38,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 40, height: 40, backgroundColor: 'CornFlowerBlue' }}>M</Avatar>
+            <Avatar sx={{ width: 40, height: 40, backgroundColor: 'CornFlowerBlue' }}>{firstLetter}</Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -44,41 +49,54 @@ export default function AccountMenu() {
         onClose={handleClose}
         onClick={handleClose}
         sx={{
-    overflow: 'visible',
-    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-    mt: 1.5,
-    '& .MuiAvatar-root': {
-      width: 32,
-      height: 32,
-      ml: -0.5,
-      mr: 1,
-    },
-    '&::before': {
-      content: '""',
-      display: 'block',
-      position: 'absolute',
-      top: 0,
-      right: 14,
-      width: 10,
-      height: 10,
-      bgcolor: 'background.paper',
-      transform: 'translateY(-50%) rotate(45deg)',
-      zIndex: 0,
-    },
-  }}
+          overflow: 'visible',
+          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+          mt: 1.5,
+          '& .MuiAvatar-root': {
+            width: 32,
+            height: 32,
+            ml: -0.5,
+            mr: 1,
+          },
+          '&::before': {
+            content: '""',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            right: 14,
+            width: 10,
+            height: 10,
+            bgcolor: 'background.paper',
+            transform: 'translateY(-50%) rotate(45deg)',
+            zIndex: 0,
+          },
+        }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Mój profil
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Konto
-        </MenuItem>
-        <Divider />
-        <MenuItem component={Link} to='/login' sx={{textAlign: 'center'}}>
-          Zaloguj się
-        </MenuItem>
+        {storedUser ? (
+          <>
+            <MenuItem component={Link} to="/profile">
+ Mój profil
+            </MenuItem>
+            <MenuItem component={Link} to="/my-offers">
+ Moje oferty
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+ Wyloguj się
+            </MenuItem>
+          </>
+        ) : (
+          <>
+            <MenuItem component={Link} to='/login' sx={{ textAlign: 'center' }}>
+              Zaloguj się
+            </MenuItem>
+            <MenuItem component={Link} to='/register' sx={{ textAlign: 'center' }}>
+              Zarejestruj się
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </div>
   );

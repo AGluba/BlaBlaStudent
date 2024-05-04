@@ -8,15 +8,17 @@ User = get_user_model()
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'image']
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password', 'image_front', 'image_back']
         extra_kwargs = {'password': {'write_only': True}, }
 
     def create(self, validated_data):
-        image = validated_data.pop('image', None)
+        image_front = validated_data.pop('image_front', None)
+        image_back = validated_data.pop('image_back', None)
         user = User.objects.create_user(**validated_data)
 
-        if image:
-            user.image = image
+        if image_front and image_back:
+            user.image_front = image_front
+            user.image_back = image_back
             user.save()
         else:
             user.save()
@@ -49,15 +51,14 @@ class UserSerializer(BaseUserSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
         obj = self.user
-
         data.update({
-            'id': obj.id, 'first_name': obj.first_name,
-            'last_name': obj.last_name, 'email': obj.email,
+            'id': obj.id,
+            'first_name': obj.first_name,
+            'last_name': obj.last_name,
+            'email': obj.email,
             'username': obj.username,
             'is_active': obj.is_active,
             'status': obj.status,
         })
-
         return data

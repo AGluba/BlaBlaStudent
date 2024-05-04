@@ -16,40 +16,46 @@ import {AppBar, Toolbar} from "@mui/material";
 import AccountMenu from './AccountMenu';
 import InputFileUpload from "./InputFileUpload";
 import axios from 'axios';
-
 // TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function Register() {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [frontImage, setFrontImage] = useState(null);
+    const [backImage, setBackImage] = useState(null);
 
-  const handleFileSelect = (file) => {
-    setSelectedFile(file);
-  };
-  const handleSubmit = async (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      data.append('image', selectedFile);
-      console.log({
-          email: data.get('email'),
-          password: data.get('password'),
+    const handleFrontImageSelect = (file) => {
+        setFrontImage(file);
+    };
+
+    const handleBackImageSelect = (file) => {
+        setBackImage(file);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        data.append('image_front', frontImage);
+        data.append('image_back', backImage);
+        console.log({
+            email: data.get('email'),
+            password: data.get('password'),
             username: data.get('username'),
             firstName: data.get('first_name'),
             lastName: data.get('last_name'),
-          uploadedFile: data.get('image')
-      });
-      try {
-          const response = await axios.post('/auth/users/', data);
-          console.log(response.data);
-      } catch (error) {
-          console.error('Błąd podczas wysyłania danych:', error);
-      }
-  };
+            frontImage: data.get('image_front'),
+            backImage: data.get('image_back')
+        });
+        try {
+            const response = await axios.post('/auth/users/', data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Błąd podczas wysyłania danych:', error);
+        }
+    };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
       <AppBar position="static" sx={{ borderRadius: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -137,8 +143,11 @@ export default function Register() {
                 />
               </Grid>
                <Grid item xs={12}>
-                <InputFileUpload onFileSelect={handleFileSelect}/>
-              </Grid>
+                   <InputFileUpload onFileSelect={handleFrontImageSelect} label="Zdjęcie przód legitymacji" />
+               </Grid>
+                <Grid item xs={12}>
+                    <InputFileUpload onFileSelect={handleBackImageSelect} label="Zdjęcie tył legitymacji" />
+                </Grid>
             </Grid>
             <Button
               type="submit"

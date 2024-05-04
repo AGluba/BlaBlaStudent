@@ -1,59 +1,69 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { Link } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {AppBar, Toolbar} from "@mui/material";
+import React, { useState } from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {
+  AppBar, Toolbar, Typography, Button, Container, Grid, Box, CssBaseline,
+  TextField, createTheme, ThemeProvider, Snackbar, Alert
+} from '@mui/material';
 import AccountMenu from './AccountMenu';
 import axios from "axios";
 
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
-export default function Login() {
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-          try {
-          const response = await axios.post('/auth/jwt/create/', Object.fromEntries(data.entries()), {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
-          console.log(response.data);
-      } catch (error) {
-          console.error('Błąd podczas wysyłania danych:', error);
-      }
+    try {
+      const response = await axios.post('/api/token/', {
+        email: email,
+        password: password,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const { access, refresh, ...userData } = response.data;
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user_data', JSON.stringify(userData));
+      setSnackbarMessage("Pomyślnie zalogowano!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+      navigate('/');
+    } catch (error) {
+      console.error('Błąd przy logowaniu:', error.response ? error.response.data : 'No response data');
+      setSnackbarMessage("Nieudane logowanie, sprawdź dane.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
-      <AppBar position="static" sx={{ borderRadius: '10px' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            BlaBlaS
-          </Typography>
-          <Button component={Link} to='/' color="inherit">Strona główna</Button>
-          <AccountMenu></AccountMenu>
-        </Toolbar>
-      </AppBar>
-        </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+        <AppBar position="static" sx={{ borderRadius: '10px' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              BlaBlaS
+            </Typography>
+            <Button component={Link} to="/" color="inherit">Strona główna</Button>
+            <AccountMenu />
+          </Toolbar>
+        </AppBar>
+      </Box>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -74,6 +84,8 @@ export default function Login() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -84,12 +96,14 @@ export default function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 , borderRadius: '10px'}}
+              sx={{ mt: 3, mb: 2, borderRadius: '10px' }}
             >
               Zaloguj
             </Button>
@@ -100,23 +114,21 @@ export default function Login() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link component={Link} to='/register' variant="body2">
-                  {"Nie masz konta? Zarejestruj się"}
+                <Link to="/register" variant="body2">
+                  Nie masz konta? Zarejestruj się
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-      <footer>
-        <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
-          <Typography variant="body2" color="text.secondary">
-            {'Wszelkie prawa zastrzeżone © '}
-            BlaBlaS&nbsp;
-            {new Date().getFullYear()}
-          </Typography>
-        </Container>
-      </footer>
       </Container>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
-}
+};
+
+export default Login;

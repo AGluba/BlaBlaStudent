@@ -230,7 +230,7 @@ const Profile = () => {
               </Box>
               <Grid container spacing={2}>
                 {Object.entries(car).map(([key, value]) => (
-                  key !== 'user' && // Usunięcie pola "user" z informacji o samochodzie
+                  key !== 'user' &&
                   <Grid item xs={6} key={key}>
                     <Typography variant="subtitle1" component="div"><strong>{key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}</strong></Typography>
                     <Typography variant="body1" component="div">{value}</Typography>

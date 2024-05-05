@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from core.models import User
 
+
 class TravelOfferManager(models.Manager):
     @staticmethod
     def validation(title, description, price, date, place_departure, place_arrival, number_of_seats, user):
@@ -20,9 +21,10 @@ class TravelOfferManager(models.Manager):
         # if number_of_seats > Vehicle.objects.filter(user_id=user_id).first().number_of_seats:
         #     raise ValueError('Number of seats must be less than or equal to the number of seats in vehicle')
 
-
-    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user):
-        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user)
+    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival,
+                            number_of_seats, user):
+        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats,
+                        user)
         travel_offer = self.model(
             title=title,
             description=description,
@@ -40,7 +42,8 @@ class TravelOfferManager(models.Manager):
 
     def update_travel_offer(self, id, title, description, price, date_departure, place_departure, place_arrival,
                             number_of_seats, user):
-        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user)
+        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats,
+                        user)
         travel_offer = self.get(id=id)
         travel_offer.title = title
         travel_offer.description = description

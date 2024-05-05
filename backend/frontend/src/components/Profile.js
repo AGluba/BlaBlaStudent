@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   AppBar, Toolbar, Typography, Button, Container, Box, Snackbar, Alert, createTheme, ThemeProvider,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Grid, Paper
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Edit, Delete, Person, DriveEta, Check } from '@mui/icons-material';
@@ -20,6 +20,12 @@ const Profile = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [editedData, setEditedData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    username: ''
+  });
   const [newCar, setNewCar] = useState({
     license_plate: '',
     brand: '',
@@ -34,6 +40,12 @@ const Profile = () => {
     const storedUser = JSON.parse(localStorage.getItem('user_data'));
     if (storedUser) {
       setUser({
+        first_name: storedUser.first_name || '',
+        last_name: storedUser.last_name || '',
+        email: storedUser.email || '',
+        username: storedUser.username || ''
+      });
+      setEditedData({
         first_name: storedUser.first_name || '',
         last_name: storedUser.last_name || '',
         email: storedUser.email || '',
@@ -63,22 +75,25 @@ const Profile = () => {
     }
   }, [car]);
 
-  const handleChange = (event) => {
+  const handleUserChange = (event) => {
     const { name, value } = event.target;
-    setUser(prevState => ({ ...prevState, [name]: value }));
+    setEditedData(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleUpdateProfile = async () => {
+  const handleCarChange = (event) => {
+    const { name, value } = event.target;
+    setNewCar(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleUpdateData = async () => {
     try {
       const token = localStorage.getItem('access_token');
       const userData = JSON.parse(localStorage.getItem('user_data'));
       const userId = userData.id;
 
       const response = await axios.put(`http://localhost:8000/api/user/update/`, {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        username: user.username
+        ...editedData,
+        id: userId // Dodanie identyfikatora użytkownika do danych
       }, {
         headers: {
           'Authorization': `JWT ${token}`,
@@ -133,7 +148,7 @@ const Profile = () => {
     }
   };
 
-  const handleEditProfile = () => {
+  const handleEditData = () => {
     setEdit(true);
   };
 
@@ -180,11 +195,11 @@ const Profile = () => {
             <Person sx={{ fontSize: 40, mr: 2 }} />
             <Typography variant="h5" sx={{ mr: 2 }}>User Information</Typography>
             {edit ? (
-              <IconButton onClick={handleUpdateProfile}>
+              <IconButton onClick={handleUpdateData}>
                 <Check />
               </IconButton>
             ) : (
-              <IconButton onClick={handleEditProfile}>
+              <IconButton onClick={handleEditData}>
                 <Edit />
               </IconButton>
             )}
@@ -196,14 +211,14 @@ const Profile = () => {
               fullWidth
               label={key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}
               name={key}
-              value={user[key]}
-              onChange={handleChange}
+              value={edit ? editedData[key] : user[key]}
+              onChange={handleUserChange}
               disabled={!edit}
             />
           ))}
           {car ? (
-            <>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+            <Box component={Paper} sx={{ mt: 2, p: 2, textAlign: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
                 <DriveEta sx={{ fontSize: 40, mr: 2 }} />
                 <Typography variant="h5" sx={{ mr: 2 }}>Car Information</Typography>
                 <IconButton onClick={handleEditCar}>
@@ -213,15 +228,16 @@ const Profile = () => {
                   <Delete />
                 </IconButton>
               </Box>
-              <ul>
-                <li>License Plate: {car.license_plate}</li>
-                <li>Brand: {car.brand}</li>
-                <li>Model: {car.model}</li>
-                <li>Year: {car.year}</li>
-                <li>Fuel Consumption: {car.fuel_consumption}</li>
-                <li>Capacity: {car.capacity}</li>
-              </ul>
-            </>
+              <Grid container spacing={2}>
+                {Object.entries(car).map(([key, value]) => (
+                  key !== 'user' && // Usunięcie pola "user" z informacji o samochodzie
+                  <Grid item xs={6} key={key}>
+                    <Typography variant="subtitle1" component="div"><strong>{key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}</strong></Typography>
+                    <Typography variant="body1" component="div">{value}</Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
           ) : (
             <Button
               sx={{ mt: 2 }}
@@ -236,58 +252,76 @@ const Profile = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{car ? 'Edit Car' : 'Add Car'}</DialogTitle>
         <DialogContent>
-          <TextField
-            margin="normal"
-            fullWidth
-            label="License Plate"
-            name="license_plate"
-            value={newCar.license_plate}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Brand"
-            name="brand"
-            value={newCar.brand}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Model"
-            name="model"
-            value={newCar.model}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Year"
-            name="year"
-            value={newCar.year}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Fuel Consumption"
-            name="fuel_consumption"
-            value={newCar.fuel_consumption}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Capacity"
-            name="capacity"
-            value={newCar.capacity}
-            onChange={handleChange}
-          />
+          {car ? (
+            <>
+              <TextField
+                margin="normal"
+                fullWidth
+                label="License Plate"
+                name="license_plate"
+                value={newCar.license_plate}
+                onChange={handleCarChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Brand"
+                name="brand"
+                value={newCar.brand}
+                onChange={handleCarChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Model"
+                name="model"
+                value={newCar.model}
+                onChange={handleCarChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Year"
+                name="year"
+                value={newCar.year}
+                onChange={handleCarChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Fuel Consumption"
+                name="fuel_consumption"
+                value={newCar.fuel_consumption}
+                onChange={handleCarChange}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Capacity"
+                name="capacity"
+                value={newCar.capacity}
+                onChange={handleCarChange}
+              />
+            </>
+          ) : (
+            <>
+              {['first_name', 'last_name', 'email', 'username'].map(key => (
+                <TextField
+                  key={key}
+                  margin="normal"
+                  fullWidth
+                  label={key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')}
+                  name={key}
+                  value={editedData[key]}
+                  onChange={handleUserChange}
+                />
+              ))}
+            </>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={car ? handleUpdateProfile : handleSaveCar} color="primary">Save</Button>
+          <Button onClick={car ? handleSaveCar : handleUpdateData} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>

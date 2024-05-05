@@ -35,7 +35,7 @@ const directionsCallback = React.useCallback((response) => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         onLoad={setMap}
-        center={{ lat: 0, lng: 0 }}
+        center={{ lat: 51.759445, lng: 19.457216 }}
         zoom={10}
       >
         <DirectionsService

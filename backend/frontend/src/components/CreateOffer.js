@@ -14,27 +14,15 @@ import AccountMenu from './AccountMenu';
 const defaultTheme = createTheme();
 
 export default function CreateOfferForm() {
+  const [errors, setErrors] = useState({})
   const storedUser = JSON.parse(localStorage.getItem('user_data'));
   const token = localStorage.getItem('access_token');
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    price: '',
-    date_departure: '',
-    place_departure: '',
-    place_arrival: '',
-    number_of_seats: ''
-  });
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     try {
       await axios.post('api/offers-add/', formData, {
         headers: {
@@ -42,9 +30,12 @@ export default function CreateOfferForm() {
           'Content-Type': 'multipart/form-data'
         }
       });
-      //TODO:: zamienić na strone z komunikatem o powodzeniu dodania oferty, i możliwością dodania kolejnej lub wyszukania ofert
       navigate('search/');
     } catch (error) {
+        if (error.response && error.response.data) {
+          setErrors(error.response.data);
+          console.log('Błędy walidacji:', error.response.data);
+        }
       console.error('Błąd podczas wysyłania danych:', error);
     }
   };
@@ -66,19 +57,21 @@ export default function CreateOfferForm() {
       </Box>
       <Container component="main" maxWidth="md">
         <Box sx={{marginTop: 8}}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
             Dodaj ofertę podróży
           </Typography>
-          <form onSubmit={handleSubmit}>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                     required
+                    autoFocus
+                    autoComplete="off"
                     fullWidth
                     name="title"
                     label="Tytuł"
-                    value={formData.title}
-                    onChange={handleChange}
+                    error={!!errors.title}
+                    helperText={errors.title && errors.title[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -87,8 +80,8 @@ export default function CreateOfferForm() {
                     fullWidth
                     name="description"
                     label="Opis"
-                    value={formData.description}
-                    onChange={handleChange}
+                    error={!!errors.description}
+                    helperText={errors.description && errors.description[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -98,8 +91,8 @@ export default function CreateOfferForm() {
                     name="price"
                     label="Cena"
                     type="number"
-                    value={formData.price}
-                    onChange={handleChange}
+                    error={!!errors.price}
+                    helperText={errors.price && errors.price[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -110,8 +103,8 @@ export default function CreateOfferForm() {
                     label="Data wyjazdu"
                     type="datetime-local"
                     InputLabelProps={{shrink: true}}
-                    value={formData.date_departure}
-                    onChange={handleChange}
+                    error={!!errors.date_departure}
+                    helperText={errors.date_departure && errors.date_departure[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -120,8 +113,8 @@ export default function CreateOfferForm() {
                     fullWidth
                     name="place_departure"
                     label="Miejsce wyjazdu"
-                    value={formData.place_departure}
-                    onChange={handleChange}
+                    error={!!errors.place_departure}
+                    helperText={errors.place_departure && errors.place_departure[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -130,8 +123,8 @@ export default function CreateOfferForm() {
                     fullWidth
                     name="place_arrival"
                     label="Miejsce przyjazdu"
-                    value={formData.place_arrival}
-                    onChange={handleChange}
+                    error={!!errors.place_arrival}
+                    helperText={errors.place_arrival && errors.place_arrival[0]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -141,21 +134,21 @@ export default function CreateOfferForm() {
                     name="number_of_seats"
                     label="Liczba miejsc"
                     type="number"
-                    value={formData.number_of_seats}
-                    onChange={handleChange}
+                    error={!!errors.number_of_seats}
+                    helperText={errors.number_of_seats && errors.number_of_seats[0]}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} container justifyContent="center">
                 <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                >
+              type="submit"
+              variant="contained"
+              sx={{ mt: 3, mb: 2 , borderRadius: '10px'}}
+            >
                   Dodaj ofertę
                 </Button>
               </Grid>
             </Grid>
-          </form>
+          </Box>
         </Box>
         <footer>
           <Container sx={{textAlign: 'center', marginTop: '15vh'}}>

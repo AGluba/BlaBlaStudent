@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'frontend',
     'offers',
     'car',
+    'reservations',
 ]
 
 MIDDLEWARE = [

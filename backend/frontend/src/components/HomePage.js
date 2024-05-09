@@ -4,35 +4,26 @@ import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container, Grid, Box, CssBaseline } from '@mui/material';
 import { DirectionsCar, Wallet, Handshake } from '@mui/icons-material';
 import AccountMenu from './AccountMenu';
+import AppAppBar from "./AppAppBar";
+import Footer from "./Footer";
+
 
 const HomePage = () => {
   const storedUser = JSON.parse(localStorage.getItem('user_data'));
 
   return (
     <div>
-      <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: 1 }}>
-      <AppBar position="static" sx={{ borderRadius: '10px' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            BlaBlaS
-          </Typography>
-            <Typography variant="h6" component="div" sx={{marginRight: '20px'}}>
-                Witaj, {storedUser ? storedUser.first_name : 'Gościu'}
-            </Typography>
-          <Button component={Link} to='/' color="inherit">Strona główna</Button>
-          <AccountMenu></AccountMenu>
-        </Toolbar>
-      </AppBar>
-
+      <CssBaseline/>
+      <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+      <AppAppBar></AppAppBar>
       <section id="hero">
         <Container sx={{ textAlign: 'center', flexGrow: 1, padding: 10 }}>
           <Typography variant="h2" gutterBottom>Znajdź lub zaoferuj przejazd!</Typography>
           <Typography paragraph>Podróżuj z innymi studentami dzięki BlaBlaS.</Typography>
           <Typography paragraph>Dołącz do naszej społeczności już dzisiaj!</Typography>
-          <Button sx={{ marginTop: '20px', borderRadius: '10px' }} variant="contained" color="primary" component={Link} to='/register'>Założ konto</Button>
-          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers'>Dodaj ofertę</Button>
-          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="primary" component={Link} to='/offers/search'>Szukaj ofert</Button>
+          <Button sx={{ marginTop: '20px', borderRadius: '10px' }} variant="contained" color="secondary" component={Link} to='/register'>Założ konto</Button>
+          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="secondary" component={Link} to='/offers'>Dodaj ofertę</Button>
+          <Button sx={{ marginTop: '20px', borderRadius: '10px', marginLeft: '10px' }} variant="contained" color="secondary" component={Link} to='/offers/search'>Szukaj ofert</Button>
         </Container>
       </section>
 
@@ -63,16 +54,7 @@ const HomePage = () => {
           </Grid>
         </Container>
       </section>
-
-      <footer>
-        <Container sx={{ textAlign: 'center', marginTop: '15vh' }}>
-          <Typography variant="body2" color="text.secondary">
-            {'Wszelkie prawa zastrzeżone © '}
-            BlaBlaS&nbsp;
-            {new Date().getFullYear()}
-          </Typography>
-        </Container>
-      </footer>
+        <Footer></Footer>
         </Box>
     </div>
   );

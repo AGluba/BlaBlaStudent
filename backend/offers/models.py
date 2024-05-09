@@ -26,17 +26,23 @@ class TravelOfferManager(models.Manager):
             errors['price'].append("To pole nie może być puste.")
         if price <= 0:
             errors['price'].append("Cena musi być większa od 0.")
-
+        if not number_of_seats:
+            errors['number_of_seats'].append("To pole nie może być puste.")
         if number_of_seats < 0:
-            errors['number_of_seats'].append("Number of seats must be greater than 0.")
-
+            errors['number_of_seats'].append("Liczba miejsc musi być większa od 0.")
+        if not date:
+            errors['date'].append("To pole nie może być puste.")
         if date < timezone.now():
-            errors['date'].append("Invalid date. Date must be greater than the current date.")
+            errors['date'].append("Data nie może być z przeszłości.")
+        if not place_departure:
+            errors['place_departure'].append("To pole nie może być puste.")
+        if not place_arrival:
+            errors['place_arrival'].append("To pole nie może być puste.")
         if place_arrival == place_departure:
-            errors['place_departure'].append("Place of arrival and departure must be different.")
-            errors['place_arrival'].append("Place of arrival and departure must be different.")
+            errors['place_departure'].append("Miejsce wyjazdu i przyjazdu muszą być różne.")
+            errors['place_arrival'].append("Miejsce wyjazdu i przyjazdu muszą być różne.")
         if not isinstance(price, float):
-            errors['price'].append("Price must be a floating-point number.")
+            errors['price'].append("Cena musi być liczbą.")
         # if number_of_seats > Vehicle.objects.filter(user_id=user_id).first().number_of_seats:
         #     errors['number_of_seats'].append('Number of seats must be less than or equal to the number of seats in vehicle')
 

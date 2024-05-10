@@ -70,23 +70,23 @@ export default function AccountMenu() {
                 {storedUser ? (
                     <>
                         <MenuItem component={Link} to="/profile">
-                           <PersonIcon sx={{marginRight: 1}}></PersonIcon>  Mój profil
+                            <PersonIcon sx={{marginRight: 1}}></PersonIcon> Mój profil
                         </MenuItem>
                         <MenuItem component={Link} to="/my-offers">
-                         <LocalOfferIcon sx={{marginRight: 1}}></LocalOfferIcon>   Moje oferty
+                            <LocalOfferIcon sx={{marginRight: 1}}></LocalOfferIcon> Moje oferty
                         </MenuItem>
                         <Divider/>
                         <MenuItem onClick={handleLogout}>
-                          <LogoutIcon sx={{marginRight: 1}}></LogoutIcon>  Wyloguj się
+                            <LogoutIcon sx={{marginRight: 1}}></LogoutIcon> Wyloguj się
                         </MenuItem>
                     </>
                 ) : (
                     <>
                         <MenuItem component={Link} to='/login' sx={{textAlign: 'center'}}>
-                            <LoginIcon sx={{marginRight: 1}}></LoginIcon>    Zaloguj się
+                            <LoginIcon sx={{marginRight: 1}}></LoginIcon> Zaloguj się
                         </MenuItem>
                         <MenuItem component={Link} to='/register' sx={{textAlign: 'center'}}>
-                           <AppRegistrationIcon sx={{marginRight: 1}}></AppRegistrationIcon> Zarejestruj się
+                            <AppRegistrationIcon sx={{marginRight: 1}}></AppRegistrationIcon> Zarejestruj się
                         </MenuItem>
                     </>
                 )}

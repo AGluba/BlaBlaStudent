@@ -2,15 +2,12 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link, useParams, useNavigate} from 'react-router-dom';
 import {Container, Typography, Box, Button, TextField, Grid, AppBar, Toolbar, CssBaseline} from '@mui/material';
-import AccountMenu from "./AccountMenu";
-import {createTheme, ThemeProvider} from "@mui/material/styles";
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
 
 const EditOfferPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const defaultTheme = createTheme();
     const [formData, setFormData] = useState({
         title: '',
         place_departure: '',
@@ -51,7 +48,7 @@ const EditOfferPage = () => {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
+        <div>
             <CssBaseline/>
             <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
                 <AppAppBar></AppAppBar>
@@ -150,7 +147,7 @@ const EditOfferPage = () => {
                     <Footer></Footer>
                 </Container>
             </Box>
-        </ThemeProvider>
+        </div>
     );
 };
 

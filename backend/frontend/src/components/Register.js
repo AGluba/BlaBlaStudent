@@ -207,6 +207,6 @@ export default function Register() {
                     <Footer></Footer>
                 </Container>
             </Box>
-</div>
+        </div>
     );
 }

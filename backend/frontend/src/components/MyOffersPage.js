@@ -11,12 +11,9 @@ import {
     Toolbar, CssBaseline,
 } from '@mui/material';
 import TravelOfferCard from './TravelOfferCard';
-import AccountMenu from './AccountMenu';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
 
-const defaultTheme = createTheme();
 
 const MyOffersPage = () => {
     const [offers, setOffers] = useState([]);
@@ -45,7 +42,7 @@ const MyOffersPage = () => {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
+        <div>
             <CssBaseline/>
             <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
                 <AppAppBar></AppAppBar>
@@ -90,7 +87,7 @@ const MyOffersPage = () => {
                     <Footer></Footer>
                 </Container>
             </Box>
-        </ThemeProvider>
+        </div>
     );
 };
 

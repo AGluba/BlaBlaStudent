@@ -11,6 +11,7 @@ import CreateOfferForm from './CreateOffer';
 import SearchTravelOffersForm from './SearchTravelOffersForm';
 import MyOffersPage from './MyOffersPage';
 import EditOfferPage from "./EditOfferPage";
+import OfferDetailsPage from "./OfferDetailsPage";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {green} from "@mui/material/colors";
 
@@ -41,6 +42,7 @@ const App = () => {
                     <Route path="/offers/search" element={<SearchTravelOffersForm/>}/>
                     <Route path="/my-offers" element={<MyOffersPage/>}/>
                     <Route path="offers/edit/:id" element={<EditOfferPage/>}/>
+                    <Route path='offers/:id' element={<OfferDetailsPage/>}/>
                 </Routes>
             </Router>
         </ThemeProvider>

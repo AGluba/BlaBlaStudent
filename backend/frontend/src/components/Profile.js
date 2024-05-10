@@ -18,7 +18,6 @@ import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
 
 
-
 const Profile = () => {
     const storedUser = JSON.parse(localStorage.getItem('user_data'));
     const token = localStorage.getItem('access_token');

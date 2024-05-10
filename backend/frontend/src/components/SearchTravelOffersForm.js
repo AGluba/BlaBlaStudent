@@ -10,6 +10,7 @@ import {Link} from 'react-router-dom';
 import TravelOfferCard from './TravelOfferCard';
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
+import {useLocation} from 'react-router-dom';
 
 
 export default function SearchTravelOffersForm() {
@@ -21,8 +22,12 @@ export default function SearchTravelOffersForm() {
     });
     const [offers, setOffers] = useState([]);
     const [noOffers, setNoOffers] = useState(false);
+    const location = useLocation();
+    const locationData = location.state ? location.state.formData : null;
 
     useEffect(() => {
+        handleNavigate().then(r => {
+        });
         fetchTravelOffers().then(r => {
         });
     }, []);
@@ -42,6 +47,18 @@ export default function SearchTravelOffersForm() {
         setFormData({...formData, [name]: value});
     };
 
+    const handleNavigate = async () => {
+        try {
+            if (locationData) {
+                const response = await axios.get('/api/offers/', {params: locationData});
+                setOffers(response.data);
+                setNoOffers(response.data.length === 0);
+            }
+        } catch (error) {
+            console.error('Błąd podczas wysyłania danych:', error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -59,12 +76,12 @@ export default function SearchTravelOffersForm() {
             <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
                 <AppAppBar></AppAppBar>
                 <Container component="main" maxWidth="md">
-                    <Box sx={{marginTop: 8}}>
+                    <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <Typography variant="h4" gutterBottom>
                             Wyszukaj oferty podróży
                         </Typography>
                         <form onSubmit={handleSubmit}>
-                            <Grid container spacing={3}>
+                            <Grid container spacing={3} sx={{marginTop: 1}}>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
@@ -101,7 +118,7 @@ export default function SearchTravelOffersForm() {
                                         onChange={handleChange}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} container justifyContent="center">
                                     <Button type="submit" variant="contained" color="secondary">
                                         Szukaj
                                     </Button>
@@ -119,13 +136,17 @@ export default function SearchTravelOffersForm() {
                             </Box>
                         )}
                         {!noOffers && (
-                            <Box sx={{marginTop: 4}}>
+                            <Box sx={{marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                 <Typography variant="h5" gutterBottom>
                                     Dostępne oferty podróży
                                 </Typography>
-                                {offers.map((offer) => (
-                                    <TravelOfferCard key={offer.id} offer={offer}/>
-                                ))}
+                                {<Grid container spacing={3}>
+                                    {offers.map((offer) => (
+                                        <Grid item xs={12} md={6} key={offer.id}>
+                                            <TravelOfferCard offer={offer}/>
+                                        </Grid>
+                                    ))}
+                                </Grid>}
                             </Box>
                         )}
                     </Box>

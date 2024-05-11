@@ -59,7 +59,25 @@ def my_travel_offers(request):
 class TravelOfferViewSet(generics.ListCreateAPIView):
     @permission_classes([AllowAny])
     def get(self, request, *args, **kwargs):
+        place_departure = request.query_params.get('place_departure', None)
+        place_arrival = request.query_params.get('place_arrival', None)
+        date_departure = request.query_params.get('date_departure', None)
+        max_price = request.query_params.get('max_price', None)
+
         travel_offers = TravelOffer.objects.all()
+
+        if place_departure:
+            travel_offers = travel_offers.filter(place_departure=place_departure)
+
+        if place_arrival:
+            travel_offers = travel_offers.filter(place_arrival=place_arrival)
+
+        if date_departure:
+            travel_offers = travel_offers.filter(date_departure=date_departure)
+
+        if max_price:
+            travel_offers = travel_offers.filter(price__lte=max_price)
+
         serializer = TravelOfferSerializer(travel_offers, many=True)
         return Response(serializer.data)
 

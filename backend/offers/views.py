@@ -13,7 +13,7 @@ from .serializers import TravelOfferSerializer
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def get_offer(request, pk):
+def get_offer(pk):
     try:
         offer = TravelOffer.objects.get(pk=pk)
         serializer = TravelOfferSerializer(offer)
@@ -38,13 +38,22 @@ def offer_update(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def offer_archive(request, pk):
+def offer_archive(pk):
     serializer = TravelOfferSerializer()
     try:
         serializer.archive(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
     except TravelOffer.DoesNotExist:
         return Response({"error": "Travel offer not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def my_travel_offers(request):
+    user = request.user
+    travel_offers = TravelOffer.objects.filter(user=user)
+    serializer = TravelOfferSerializer(travel_offers, many=True)
+    return Response(serializer.data)
 
 @permission_classes([AllowAny])
 class TravelOfferViewSet(generics.ListCreateAPIView):
@@ -68,7 +77,7 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
 
     @permission_classes([IsAuthenticated])
     @authentication_classes([JWTAuthentication])
-    def delete(self, request, offerId, *args, **kwargs):
+    def delete(self, offerId, *args, **kwargs):
         serializer = TravelOfferSerializer()
         try:
             serializer.delete(offerId)

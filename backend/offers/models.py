@@ -4,10 +4,12 @@ from django.db import models
 from django.utils import timezone
 
 from core.models import User
+from car.models import Car
+
 
 class TravelOfferManager(models.Manager):
 
-    def validation(self, title, desc, price, date, place_departure, place_arrival, number_of_seats):
+    def validation(self, title, desc, price, date, place_departure, place_arrival, number_of_seats, phone_number):
         errors = {
             'title': [],
             'desc': [],
@@ -15,7 +17,8 @@ class TravelOfferManager(models.Manager):
             'date': [],
             'place_departure': [],
             'place_arrival': [],
-            'number_of_seats': []
+            'number_of_seats': [],
+            'phone_number': []
         }
 
         if not title:
@@ -28,8 +31,8 @@ class TravelOfferManager(models.Manager):
             errors['price'].append("Cena musi być większa od 0.")
         if not number_of_seats:
             errors['number_of_seats'].append("To pole nie może być puste.")
-        if number_of_seats < 0:
-            errors['number_of_seats'].append("Liczba miejsc musi być większa od 0.")
+        if number_of_seats < 1:
+            errors['number_of_seats'].append("Liczba miejsc musi być większa od 1.")
         if not date:
             errors['date'].append("To pole nie może być puste.")
         if date < timezone.now():
@@ -43,8 +46,14 @@ class TravelOfferManager(models.Manager):
             errors['place_arrival'].append("Miejsce wyjazdu i przyjazdu muszą być różne.")
         if not isinstance(price, float):
             errors['price'].append("Cena musi być liczbą.")
-        # if number_of_seats > Vehicle.objects.filter(user_id=user_id).first().number_of_seats:
-        #     errors['number_of_seats'].append('Number of seats must be less than or equal to the number of seats in vehicle')
+        if not isinstance(number_of_seats, int):
+            errors['number_of_seats'].append("Liczba miejsc musi być liczbą całkowitą.")
+        if number_of_seats > Car.capacity - 1:
+            errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
+        if not phone_number:
+            errors['phone_number'].append("To pole nie może być puste.")
+        if len(phone_number) < 9:
+            errors['phone_number'].append("Numer telefonu musi mieć conajmniej 9 cyfr.")
 
         errors = {field: error_list for field, error_list in errors.items() if error_list}
 
@@ -52,9 +61,9 @@ class TravelOfferManager(models.Manager):
             raise ValidationError(errors)
         return True
 
-    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user):
+    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user, phone_number):
         try:
-            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats)
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
             travel_offer = self.model(
                 title=title,
                 description=description,
@@ -63,6 +72,7 @@ class TravelOfferManager(models.Manager):
                 place_departure=place_departure,
                 place_arrival=place_arrival,
                 number_of_seats=number_of_seats,
+                phone_number=phone_number,
                 user_id=user.id,
                 status=True
             )
@@ -73,9 +83,9 @@ class TravelOfferManager(models.Manager):
             raise RestValidationError(e.message_dict)
 
     def update_travel_offer(self, id, title, description, price, date_departure, place_departure, place_arrival,
-                            number_of_seats, user):
+                            number_of_seats, phone_number):
         try:
-            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats)
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
             travel_offer = self.get(id=id)
             travel_offer.title = title
             travel_offer.description = description
@@ -84,6 +94,7 @@ class TravelOfferManager(models.Manager):
             travel_offer.place_departure = place_departure
             travel_offer.place_arrival = place_arrival
             travel_offer.number_of_seats = number_of_seats
+            travel_offer.phone_number = phone_number
             travel_offer.full_clean()
             travel_offer.save()
             return travel_offer
@@ -115,6 +126,7 @@ class TravelOffer(models.Model):
     place_arrival = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     number_of_seats = models.IntegerField()
+    phone_number = models.CharField(max_length=20, default='')
 
     objects = TravelOfferManager()
 

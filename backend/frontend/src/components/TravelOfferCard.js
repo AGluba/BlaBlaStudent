@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 
 const TravelOfferCard = ({ offer }) => {
-  const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats } = offer;
+  const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats, phone_number, status, user } = offer;
   const departureDate = new Date(date_departure).toLocaleString('pl-PL', {
     day: '2-digit',
     month: '2-digit',
@@ -37,7 +37,7 @@ const TravelOfferCard = ({ offer }) => {
         const userData = JSON.parse(localStorage.getItem('user_data'));
         const userId = userData.id;
         const userReservation = reservations.find(reservation => reservation.user_id === userId);
-        setOccupiedSeats(reservations.length+1);
+        setOccupiedSeats(reservations.length + 1);
         if (userReservation) {
           setReservationId(userReservation.id);
         }
@@ -126,6 +126,16 @@ const TravelOfferCard = ({ offer }) => {
           <Typography variant="body2" color="textSecondary">
             Cena: {price.toFixed(2)} zł
           </Typography>
+            <Typography variant="body2" color="textSecondary">
+                Numer telefonu: {phone_number}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+                Status: {status}
+            </Typography>
+          <Typography variant="body2" color="textSecondary">
+                Użytkownik: {user}
+            </Typography>
+
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {renderSeats()}

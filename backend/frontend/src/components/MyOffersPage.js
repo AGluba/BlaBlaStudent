@@ -17,6 +17,7 @@ import Footer from "./Footer";
 
 const MyOffersPage = () => {
     const [offers, setOffers] = useState([]);
+    const token = localStorage.getItem('access_token');
 
     useEffect(() => {
         fetchOffers().then(r => {
@@ -25,7 +26,13 @@ const MyOffersPage = () => {
 
     const fetchOffers = async () => {
         try {
-            const response = await axios.get('/api/my-offers/');
+            const response = await axios.get('/api/my-offers/',
+                {
+                    headers: {
+                        'Authorization': `JWT ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             setOffers(response.data);
         } catch (error) {
             console.error('Błąd podczas pobierania ofert:', error);

@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import {AppBar, CssBaseline, Toolbar, Typography} from '@mui/material';
+import {CssBaseline, Typography} from '@mui/material';
 import axios from 'axios';
 
 import AppAppBar from "./AppAppBar";
@@ -104,6 +104,17 @@ export default function CreateOfferForm() {
                                         label="Miejsce wyjazdu"
                                         error={!!errors.place_departure}
                                         helperText={errors.place_departure && errors.place_departure[0]}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        name="phone_number"
+                                        label="Numer telefonu"
+                                        type="tel"
+                                        error={!!errors.phone_number}
+                                        helperText={errors.phone_number && errors.phone_number[0]}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>

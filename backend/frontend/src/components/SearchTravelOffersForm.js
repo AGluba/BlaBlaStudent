@@ -34,7 +34,7 @@ export default function SearchTravelOffersForm() {
 
     const fetchTravelOffers = async () => {
         try {
-            const response = await axios.get('api/offers/');
+            const response = await axios.get('/api/offers/');
             setOffers(response.data);
             setNoOffers(response.data.length === 0);
         } catch (error) {

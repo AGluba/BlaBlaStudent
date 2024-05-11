@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'core',
     'frontend',
     'offers',
-    'translations',
+    # 'translations',
 ]
 
 MIDDLEWARE = [

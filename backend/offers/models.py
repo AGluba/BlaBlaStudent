@@ -18,9 +18,14 @@ class TravelOfferManager(models.Manager):
             'place_departure': [],
             'place_arrival': [],
             'number_of_seats': [],
-            'phone_number': []
+            'phone_number': [],
+            'car': []
         }
-
+        if not Car.objects.exists():
+            errors['car'].append("Dodaj samochód, aby móc dodać ofertę podróży.")
+        else:
+            if number_of_seats > Car.capacity - 1:
+                errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
         if not title:
             errors['title'].append("To pole nie może być puste.")
         if not desc:
@@ -48,8 +53,6 @@ class TravelOfferManager(models.Manager):
             errors['price'].append("Cena musi być liczbą.")
         if not isinstance(number_of_seats, int):
             errors['number_of_seats'].append("Liczba miejsc musi być liczbą całkowitą.")
-        if number_of_seats > Car.capacity - 1:
-            errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
         if not phone_number:
             errors['phone_number'].append("To pole nie może być puste.")
         if len(phone_number) < 9:
@@ -126,7 +129,7 @@ class TravelOffer(models.Model):
     place_arrival = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     number_of_seats = models.IntegerField()
-    phone_number = models.CharField(max_length=20, default='')
+    phone_number = models.CharField(max_length=20)
 
     objects = TravelOfferManager()
 

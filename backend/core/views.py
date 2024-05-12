@@ -60,22 +60,3 @@ def activate_user(request):
         print("Error:", response.text)
         return Response({'error': 'Activation failed.'}, status=response.status_code)
 
-@api_view(['PUT'])
-@permission_classes([permissions.IsAuthenticated])
-def update_user_profile(request):
-    user = request.user
-    data = request.data
-    user.first_name = data.get('first_name', user.first_name)
-    user.last_name = data.get('last_name', user.last_name)
-    user.email = data.get('email', user.email)
-    user.save()
-
-    return Response({
-        'id': user.id,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'email': user.email,
-        'username': user.username,
-        'is_active': user.is_active,
-        'status': user.status
-    }, status=status.HTTP_200_OK)

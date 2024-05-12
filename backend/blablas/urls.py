@@ -18,7 +18,6 @@ urlpatterns = [
     path('api/', include('reservations.urls')),
     path('auth/activate/', activate_user, name='activate-user'),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/user/update/', core_views.update_user_profile, name='update-profile'),
     path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='custom_jwt_create'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

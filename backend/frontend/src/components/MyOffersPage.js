@@ -54,7 +54,7 @@ const MyOffersPage = () => {
             <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
                 <AppAppBar></AppAppBar>
                 <Container maxWidth="md">
-                    <Box sx={{my: 4}}>
+                    <Box sx={{my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <Typography variant="h4" gutterBottom>
                             Moje oferty podróży
                         </Typography>
@@ -69,7 +69,7 @@ const MyOffersPage = () => {
                         </Button>
                         <Grid container spacing={3}>
                             {offers.map((offer) => (
-                                <Grid item xs={12} md={6} key={offer.id}>
+                                <Grid item xs={12} md={12} key={offer.id}>
                                     <TravelOfferCard offer={offer}/>
                                     <Button
                                         component={Link}

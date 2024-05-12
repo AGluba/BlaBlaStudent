@@ -8,6 +8,7 @@ import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
+import EmissionInfo from "./EmissionInfo";
 
 
 const HomePage = () => {

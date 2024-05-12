@@ -142,7 +142,7 @@ export default function SearchTravelOffersForm() {
                                 </Typography>
                                 {<Grid container spacing={3}>
                                     {offers.map((offer) => (
-                                        <Grid item xs={12} md={6} key={offer.id}>
+                                        <Grid item xs={12} md={12} key={offer.id}>
                                             <TravelOfferCard offer={offer}/>
                                         </Grid>
                                     ))}

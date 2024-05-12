@@ -38,7 +38,7 @@ const TravelOfferCard = ({offer}) => {
         const userData = JSON.parse(localStorage.getItem('user_data'));
         const userId = userData.id;
         const userReservation = reservations.find(reservation => reservation.user_id === userId);
-        setOccupiedSeats(reservations.length + 1);
+        setOccupiedSeats(reservations.length);
         if (userReservation) {
           setReservationId(userReservation.id);
         }
@@ -47,7 +47,7 @@ const TravelOfferCard = ({offer}) => {
       }
     };
 
-        fetchData();
+        fetchData().then(r => console.log('Pobrano rezerwacje'));
     }, [id]);
 
     const handleSeatToggle = async () => {

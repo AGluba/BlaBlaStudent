@@ -56,7 +56,7 @@ const HomePage = () => {
                                             fullWidth
                                             name="date_departure"
                                             label="Data wyjazdu"
-                                            type="datetime-local"
+                                            type="date"
                                             InputLabelProps={{shrink: true}}
                                         />
                                     </Grid>

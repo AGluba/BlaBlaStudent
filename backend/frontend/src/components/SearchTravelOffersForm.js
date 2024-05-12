@@ -103,7 +103,7 @@ export default function SearchTravelOffersForm() {
                                         fullWidth
                                         name="date_departure"
                                         label="Data wyjazdu"
-                                        type="datetime-local"
+                                        type="date"
                                         InputLabelProps={{shrink: true}}
                                         value={formData.date_departure}
                                         onChange={handleChange}
@@ -130,7 +130,7 @@ export default function SearchTravelOffersForm() {
                                 <Typography variant="body1" gutterBottom>
                                     Brak dostępnych ofert podróży. Chcesz dodać nową ofertę?
                                 </Typography>
-                                <Button component={Link} to="/add-offers" variant="outlined" color="secondary">
+                                <Button component={Link} to="/offers" variant="outlined" color="secondary">
                                     Dodaj nową ofertę
                                 </Button>
                             </Box>

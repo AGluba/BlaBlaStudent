@@ -19,7 +19,7 @@ def get_offer(pk):
         serializer = TravelOfferSerializer(offer)
         return Response(serializer.data)
     except TravelOffer.DoesNotExist:
-        return Response({"error": "Travel offer not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -33,7 +33,7 @@ def offer_update(request, pk):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except TravelOffer.DoesNotExist:
-        return Response({"error": "Travel offer not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -44,7 +44,7 @@ def offer_archive(pk):
         serializer.archive(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
     except TravelOffer.DoesNotExist:
-        return Response({"error": "Travel offer not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -73,7 +73,7 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
             travel_offers = travel_offers.filter(place_arrival=place_arrival)
 
         if date_departure:
-            travel_offers = travel_offers.filter(date_departure=date_departure)
+            travel_offers = travel_offers.filter(date_departure__date=date_departure)
 
         if max_price:
             travel_offers = travel_offers.filter(price__lte=max_price)
@@ -101,4 +101,4 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
             serializer.delete(offerId)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TravelOffer.DoesNotExist:
-            return Response({"error": "Travel offer not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)

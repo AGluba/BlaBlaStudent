@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 from core.models import User
-from car.models import Car
+
 
 
 class TravelOfferManager(models.Manager):
@@ -21,11 +21,11 @@ class TravelOfferManager(models.Manager):
             'phone_number': [],
             'car': []
         }
-        if not Car.objects.exists():
-            errors['car'].append("Dodaj samochód, aby móc dodać ofertę podróży.")
-        else:
-            if number_of_seats > Car.capacity - 1:
-                errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
+        # if not Car.objects.exists():
+        #     errors['car'].append("Dodaj samochód, aby móc dodać ofertę podróży.")
+        # else:
+        #     if number_of_seats > Car.capacity - 1:
+        #         errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
         if not title:
             errors['title'].append("To pole nie może być puste.")
         if not desc:

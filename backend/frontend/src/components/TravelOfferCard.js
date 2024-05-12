@@ -20,7 +20,7 @@ const TravelOfferCard = ({ offer }) => {
     minute: '2-digit'
   });
 
-  const [occupiedSeats, setOccupiedSeats] = useState(1);
+  const [occupiedSeats, setOccupiedSeats] = useState(0);
   const [totalSeats] = useState(number_of_seats);
   const [reservationId, setReservationId] = useState(null);
 
@@ -28,7 +28,7 @@ const TravelOfferCard = ({ offer }) => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get(`http://localhost:8000/api/reservations/${id}`, {
+        const response = await axios.get(`http://localhost:8000/api/reservations/${id}/`, {
           headers: {
             'Authorization': `JWT ${token}`,
           }
@@ -53,7 +53,7 @@ const TravelOfferCard = ({ offer }) => {
     if (reservationId) {
       try {
         const token = localStorage.getItem('access_token');
-        await axios.delete(`http://localhost:8000/api/reservations/delete/${id}`, {
+        await axios.delete(`http://localhost:8000/api/reservations/delete/${id}/`, {
           headers: {
             'Authorization': `JWT ${token}`,
           }
@@ -70,7 +70,7 @@ const TravelOfferCard = ({ offer }) => {
           const userData = JSON.parse(localStorage.getItem('user_data'));
           const token = localStorage.getItem('access_token');
           const userId = userData.id;
-          await axios.post(`http://localhost:8000/api/reservations/add`, { travel_id: id, user_id: userId }, {
+          await axios.post(`http://localhost:8000/api/reservations/add/`, { travel_id: id, user_id: userId }, {
             headers: {
               'Authorization': `JWT ${token}`,
             }

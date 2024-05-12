@@ -16,7 +16,7 @@ class ReservationManager(models.Manager):
             errors['user'].append('To pole nie może być puste')
         if not travel_offer:
             errors['travel_offer'].append('To pole nie może być puste')
-        if user == travel_offer.user:
+        if user.id == travel_offer.user_id:
             errors['travel_offer'].append('Nie możesz zarezerwować swojej oferty')
         if travel_offer.number_of_seats == 0:
             errors['travel_offer'].append('Brak wolnych miejsc')

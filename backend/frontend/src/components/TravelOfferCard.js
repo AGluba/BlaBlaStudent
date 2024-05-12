@@ -54,7 +54,7 @@ const TravelOfferCard = ({offer}) => {
         if (reservationId) {
             try {
                 const token = localStorage.getItem('access_token');
-                await axios.delete(`http://localhost:8000/api/reservations/delete/${id}`, {
+                await axios.delete(`http://localhost:8000/api/reservations/delete/${id}/`, {
                     headers: {
                         'Authorization': `JWT ${token}`,
                     }
@@ -71,7 +71,7 @@ const TravelOfferCard = ({offer}) => {
                     const userData = JSON.parse(localStorage.getItem('user_data'));
                     const token = localStorage.getItem('access_token');
                     const userId = userData.id;
-                    await axios.post(`http://localhost:8000/api/reservations/`, {travel_id: id, user_id: userId}, {
+                    await axios.post(`http://localhost:8000/api/reservations/add/`, {travel_id: id, user_id: userId}, {
                         headers: {
                             'Authorization': `JWT ${token}`,
                         }

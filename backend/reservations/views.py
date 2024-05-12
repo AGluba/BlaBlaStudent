@@ -23,7 +23,8 @@ def get_reservation(request, *args, **kwargs):
         user_id = request.user.id
         travel_id = kwargs.get('travel_id')
         reservation = Reservation.objects.filter(user_id=user_id, travel_offer_id=travel_id)
-        return Response(reservation)
+        serializer = ReservationSerializer(reservation, many=True)
+        return Response(serializer.data)
     except Reservation.DoesNotExist:
         return Response({"error": "Nie udało się znaleźć tej rezerwacji"}, status=status.HTTP_404_NOT_FOUND)
 

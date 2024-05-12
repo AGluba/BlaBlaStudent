@@ -12,5 +12,6 @@ urlpatterns = [
     path('offers/<int:offerId>', index),
     path('offers/search', index),
     path('my-offers', index),
-    path('offers/edit/<int:offerId>', index),
+    path('reset_password', index),
+    path('offers/edit/<int:offerId>', index)
 ]

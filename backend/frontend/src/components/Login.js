@@ -93,7 +93,7 @@ const Login = () => {
                             </Button>
                             <Grid container>
                                 <Grid item xs>
-                                    <Link href="#" variant="body2">
+                                    <Link to="/reset_password" variant="body2">
                                         Zapomniałeś hasła?
                                     </Link>
                                 </Grid>

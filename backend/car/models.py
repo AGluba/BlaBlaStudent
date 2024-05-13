@@ -7,7 +7,9 @@ class Car(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     brand = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
+    generation = models.CharField(max_length=20)
     year = models.IntegerField()
+    fuel = models.CharField(max_length=20)
     fuel_consumption = models.IntegerField()
     capacity = models.IntegerField()
 

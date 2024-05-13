@@ -44,7 +44,9 @@ const Profile = () => {
         license_plate: '',
         brand: '',
         model: '',
+        generation: '',
         year: '',
+        fuel: '',
         fuel_consumption: '',
         capacity: ''
     });
@@ -210,7 +212,9 @@ const Profile = () => {
             license_plate: '',
             brand: '',
             model: '',
+            generation: '',
             year: '',
+            fuel: '',
             fuel_consumption: '',
             capacity: ''
         });
@@ -259,7 +263,9 @@ const Profile = () => {
         license_plate: 'Numer rejestracyjny',
         brand: 'Marka',
         model: 'Model',
+        generation: 'Generacja',
         year: 'Rok produkcji',
+        fuel: 'Rodzaj paliwa',
         fuel_consumption: 'Spalanie',
         capacity: 'Pojemność'
     };
@@ -361,9 +367,25 @@ const Profile = () => {
                         <TextField
                             margin="normal"
                             fullWidth
+                            label="Generacja"
+                            name="generation"
+                            value={newCar.generation}
+                            onChange={handleCarChange}
+                        />
+                        <TextField
+                            margin="normal"
+                            fullWidth
                             label="Rok produkcji"
                             name="year"
                             value={newCar.year}
+                            onChange={handleCarChange}
+                        />
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            label="Rodzaj paliwa"
+                            name="fuel"
+                            value={newCar.fuel}
                             onChange={handleCarChange}
                         />
                         <TextField

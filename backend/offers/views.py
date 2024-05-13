@@ -88,7 +88,7 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
         serializer = TravelOfferSerializer(data=request.data, context={'request': request})
         try:
             serializer.is_valid(raise_exception=True)
-            serializer.save(user=user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response(e, status=status.HTTP_400_BAD_REQUEST)

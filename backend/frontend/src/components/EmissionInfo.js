@@ -9,18 +9,18 @@ export default function EmissionInfo() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setOpen(false);
-        }, 5000);
+        }, 3500);
         return () => clearTimeout(timer);
     }, []);
 
     return (
         <Snackbar open={open}
-            autoHideDuration={6000}
+            autoHideDuration={3500}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                   style={{position: 'absolute', top: '25%'}}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <EnergySavingsLeafOutlinedIcon color='secondary'sx={{ fontSize: 250}} />
-                <Typography variant="h4" gutterBottom>Wyemitowałeś o 45g/km mniej CO2,</Typography>
+                <Typography variant="h4" gutterBottom>Wyemitowałeś o 11,2 kg mniej CO2,</Typography>
                 <Typography variant="h4" gutterBottom>niż w przypadku podróży samemu!</Typography>
             </div>
         </Snackbar>

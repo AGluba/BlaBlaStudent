@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Alert,
     Box,
@@ -16,7 +16,7 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { Check, Delete, DriveEta, Edit, Person } from '@mui/icons-material';
+import {Check, Delete, DriveEta, Edit, Person, Verified, NewReleases} from '@mui/icons-material';
 import axios from 'axios';
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
@@ -95,25 +95,27 @@ const Profile = () => {
     }, [car]);
 
     const handleUserChange = (event) => {
-        const { name, value } = event.target;
-        setEditedData(prevState => ({ ...prevState, [name]: value }));
+        const {name, value} = event.target;
+        setEditedData(prevState => ({...prevState, [name]: value}));
     };
 
     const handleCarChange = (event) => {
-        const { name, value } = event.target;
-        setNewCar(prevState => ({ ...prevState, [name]: value }));
+        const {name, value} = event.target;
+        setNewCar(prevState => ({...prevState, [name]: value}));
     };
 
     const handleUpdateData = async () => {
         try {
             const userData = JSON.parse(localStorage.getItem('user_data'));
-            console.log({id: userData.id,
+            console.log({
+                id: userData.id,
                 first_name: editedData.first_name,
                 last_name: editedData.last_name,
                 username: editedData.username,
                 email: editedData.email,
                 is_active: userData.is_active,
-                status: userData.status});
+                status: userData.status
+            });
 
             const response = await axios.put('http://localhost:8000/auth/users/me/', {
                 id: userData.id,
@@ -181,7 +183,7 @@ const Profile = () => {
         try {
             const userData = JSON.parse(localStorage.getItem('user_data'));
             const userId = userData.id;
-            const formData = { ...newCar, user: userId };
+            const formData = {...newCar, user: userId};
             await axios.post('http://localhost:8000/api/cars/', formData, {
                 headers: {
                     'Authorization': `JWT ${token}`,
@@ -192,9 +194,9 @@ const Profile = () => {
             setSnackbarOpen(true);
 
             const response = await axios.get(`http://localhost:8000/api/cars/${userId}/`, {
-            headers: {
-                'Authorization': `JWT ${token}`,
-            }
+                headers: {
+                    'Authorization': `JWT ${token}`,
+                }
             });
             setCar(response.data);
 
@@ -207,18 +209,18 @@ const Profile = () => {
     };
 
     useEffect(() => {
-    if (car === null) {
-        setNewCar({
-            license_plate: '',
-            brand: '',
-            model: '',
-            generation: '',
-            year: '',
-            fuel: '',
-            fuel_consumption: '',
-            capacity: ''
-        });
-    }
+        if (car === null) {
+            setNewCar({
+                license_plate: '',
+                brand: '',
+                model: '',
+                generation: '',
+                year: '',
+                fuel: '',
+                fuel_consumption: '',
+                capacity: ''
+            });
+        }
     }, [car]);
 
     const handleEditData = () => {
@@ -270,6 +272,7 @@ const Profile = () => {
         capacity: 'Pojemność'
     };
 
+
     return (
         <div>
             <CssBaseline/>
@@ -278,6 +281,10 @@ const Profile = () => {
                 <Container component="main" maxWidth="sm">
                     <Box sx={{mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <Box sx={{display: 'flex', alignItems: 'center', mt: 2}}>
+                            {storedUser && storedUser.status ?
+                                (<Verified></Verified>) :
+                                (<NewReleases></NewReleases>)
+                            }
                             <Person sx={{fontSize: 40, mr: 2}}/>
                             <Typography variant="h5" sx={{mr: 2}}>Mój profil</Typography>
                             {edit ? (
@@ -318,11 +325,11 @@ const Profile = () => {
                                     {Object.entries(car).map(([key, value]) => (
                                         key !== 'user' &&
                                         <Grid item xs={6} key={key}>
-                                        <Typography variant="subtitle1" component="div">
-                                            <strong>{translatedLabels[key]}</strong>
-                                        </Typography>
-                                        <Typography variant="body1" component="div">{value}</Typography>
-                                    </Grid>
+                                            <Typography variant="subtitle1" component="div">
+                                                <strong>{translatedLabels[key]}</strong>
+                                            </Typography>
+                                            <Typography variant="body1" component="div">{value}</Typography>
+                                        </Grid>
                                     ))}
                                 </Grid>
                             </Box>
@@ -415,7 +422,8 @@ const Profile = () => {
                     </DialogActions>
                 </Dialog>
                 <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-                    <Alert onClose={handleSnackbarClose} severity={snackbarMessage.includes('pomyślnie') ? 'success' : 'error'} sx={{width: '100%'}}>
+                    <Alert onClose={handleSnackbarClose}
+                           severity={snackbarMessage.includes('pomyślnie') ? 'success' : 'error'} sx={{width: '100%'}}>
                         {snackbarMessage}
                     </Alert>
                 </Snackbar>

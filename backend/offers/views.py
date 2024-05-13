@@ -36,9 +36,8 @@ def offer_update(request, pk):
         return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication])
-def offer_archive(pk):
+@permission_classes([AllowAny])
+def offer_archive(request, pk):
     serializer = TravelOfferSerializer()
     try:
         serializer.archive(pk)
@@ -102,3 +101,4 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TravelOffer.DoesNotExist:
             return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
+

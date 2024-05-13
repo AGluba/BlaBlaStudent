@@ -11,18 +11,22 @@ import {
     DialogTitle,
     Grid,
     IconButton,
+    InputLabel,
     Paper,
+    Select,
     Snackbar,
     TextField,
     Typography,
 } from '@mui/material';
-import {Check, Delete, DriveEta, Edit, Person, Verified, NewReleases} from '@mui/icons-material';
+import {Check, Delete, DriveEta, Edit, NewReleases, Person, Verified} from '@mui/icons-material';
 import axios from 'axios';
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
+import MenuItem from "@mui/material/MenuItem";
 
 const Profile = () => {
     const storedUser = JSON.parse(localStorage.getItem('user_data'));
+    const fuelTypes = ['Benzyna', 'Diesel', 'LPG', 'Elektryczny', 'Hybrydowy'];
     const token = localStorage.getItem('access_token');
     const [user, setUser] = useState({
         first_name: '',
@@ -387,14 +391,24 @@ const Profile = () => {
                             value={newCar.year}
                             onChange={handleCarChange}
                         />
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            label="Rodzaj paliwa"
-                            name="fuel"
-                            value={newCar.fuel}
-                            onChange={handleCarChange}
-                        />
+                        <Box sx={{marginTop: '16px'}}>
+                            <InputLabel id="fuel-label">Rodzaj paliwa</InputLabel>
+                            <Select
+                                labelId="fuel-label"
+                                id="fuel"
+                                name="fuel"
+                                value={newCar.fuel}
+                                onChange={handleCarChange}
+                                fullWidth
+                                sx={{marginTop: '8px'}}
+                            >
+                                {fuelTypes.map((fuel, index) => (
+                                    <MenuItem key={index} value={fuel}>
+                                        {fuel}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Box>
                         <TextField
                             margin="normal"
                             fullWidth

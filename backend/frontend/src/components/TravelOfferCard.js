@@ -33,7 +33,7 @@ const TravelOfferCard = ({ offer }) => {
                 const response = await axios.get(`http://localhost:8000/api/reservations/${id}/`, {
                     headers: {
                         'Authorization': `JWT ${token}`,
-                    }
+                   }
                 });
                 const reservations = response.data;
                 const userId = userData.id;
@@ -45,6 +45,7 @@ const TravelOfferCard = ({ offer }) => {
             } catch (error) {
                 console.error('Wystąpił błąd podczas pobierania rezerwacji:', error);
             }
+
         };
 
         fetchData().then(r => console.log('Pobrano rezerwacje'));

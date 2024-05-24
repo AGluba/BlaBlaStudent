@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/', include('offers.urls')),
     path('api/', include('car.urls')),
     path('api/', include('reservations.urls')),
+    path('api/', include('opinion.urls')),
     path('auth/activate/', activate_user, name='activate-user'),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='custom_jwt_create'),

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # 'translations',
     'car',
     'reservations',
+    'opinion',
 ]
 
 MIDDLEWARE = [

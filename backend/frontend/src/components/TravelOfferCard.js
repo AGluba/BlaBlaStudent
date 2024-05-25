@@ -12,7 +12,7 @@ import axios from "axios";
 import EmissionInfo from "./EmissionInfo";
 
 const TravelOfferCard = ({ offer }) => {
-    const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats, user_id} = offer;
+    const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats, user_id } = offer;
     const departureDate = new Date(date_departure).toLocaleString('pl-PL', {
         day: '2-digit',
         month: '2-digit',
@@ -24,16 +24,18 @@ const TravelOfferCard = ({ offer }) => {
     const [occupiedSeats, setOccupiedSeats] = useState(0);
     const [totalSeats] = useState(number_of_seats);
     const [reservationId, setReservationId] = useState(null);
+    const [username, setUsername] = useState('');
     const userData = JSON.parse(localStorage.getItem('user_data'));
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('access_token');
+
                 const response = await axios.get(`http://localhost:8000/api/reservations/${id}/`, {
                     headers: {
                         'Authorization': `JWT ${token}`,
-                   }
+                    }
                 });
                 const reservations = response.data;
                 const userId = userData.id;
@@ -42,20 +44,26 @@ const TravelOfferCard = ({ offer }) => {
                 if (userReservation) {
                     setReservationId(userReservation.id);
                 }
-            } catch (error) {
-                console.error('Wystąpił błąd podczas pobierania rezerwacji:', error);
-            }
 
+                const userResponse = await axios.get(`http://localhost:8000/api/users/${user_id}/`, {
+                    headers: {
+                        'Authorization': `JWT ${token}`,
+                    }
+                });
+                setUsername(userResponse.data.username);
+            } catch (error) {
+                console.error('Wystąpił błąd podczas pobierania danych:', error);
+            }
         };
 
-        fetchData().then(r => console.log('Pobrano rezerwacje'));
-    }, [id]);
+        fetchData();
+    }, [id, user_id, userData.id]);
 
     const handleSeatToggle = async () => {
         if (reservationId) {
             try {
                 const token = localStorage.getItem('access_token');
-                await axios.delete(`http://localhost:8000/api/reservations/delete/${id}/`, {
+                await axios.delete(`http://localhost:8000/api/reservations/delete/${reservationId}/`, {
                     headers: {
                         'Authorization': `JWT ${token}`,
                     }
@@ -67,17 +75,16 @@ const TravelOfferCard = ({ offer }) => {
             }
         } else {
             if (occupiedSeats < totalSeats) {
-                setOccupiedSeats(occupiedSeats + 1);
                 try {
-                    const userData = JSON.parse(localStorage.getItem('user_data'));
                     const token = localStorage.getItem('access_token');
                     const userId = userData.id;
-                    await axios.post(`http://localhost:8000/api/reservations/add/`, { travel_id: id, user_id: userId }, {
+                    const response = await axios.post(`http://localhost:8000/api/reservations/add/`, { travel_id: id, user_id: userId }, {
                         headers: {
                             'Authorization': `JWT ${token}`,
                         }
                     });
-                    setReservationId(id);
+                    setReservationId(response.data.id);
+                    setOccupiedSeats(occupiedSeats + 1);
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }
@@ -96,13 +103,13 @@ const TravelOfferCard = ({ offer }) => {
         }
         if (reservationId) {
             seats.push(
-                <IconButton onClick={handleSeatToggle}>
+                <IconButton key="delete" onClick={handleSeatToggle}>
                     <DeleteIcon fontSize="large" />
                 </IconButton>
             );
         } else {
             seats.push(
-                <IconButton onClick={handleSeatToggle} disabled={userData.id === user_id}>
+                <IconButton key="add" onClick={handleSeatToggle} disabled={userData.id === user_id}>
                     <AddIcon fontSize="large" />
                 </IconButton>
             );
@@ -133,7 +140,7 @@ const TravelOfferCard = ({ offer }) => {
                         Cena: {price.toFixed(2)} zł
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                        Id użytkownika: {user_id}
+                        Użytkownik: {username}
                     </Typography>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>

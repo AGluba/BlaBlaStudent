@@ -5,7 +5,7 @@ from .models import TravelOffer
 class TravelOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = TravelOffer
-        fields = ['id', 'title', 'description', 'price', 'date_departure', 'place_departure', 'place_arrival', 'number_of_seats', 'phone_number', 'status', 'user']
+        fields = ['id', 'title', 'description', 'price', 'date_departure', 'place_departure', 'place_arrival', 'number_of_seats', 'phone_number', 'status', 'user_id']
 
     def create(self, validated_data):
         try:

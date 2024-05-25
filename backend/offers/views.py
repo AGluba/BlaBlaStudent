@@ -13,7 +13,7 @@ from .serializers import TravelOfferSerializer
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def get_offer(pk):
+def get_offer(request, pk):
     try:
         offer = TravelOffer.objects.get(pk=pk)
         serializer = TravelOfferSerializer(offer)
@@ -38,7 +38,7 @@ def offer_update(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def offer_archive(pk):
+def offer_archive(request, pk):
     serializer = TravelOfferSerializer()
     try:
         serializer.archive(pk)
@@ -88,17 +88,18 @@ class TravelOfferViewSet(generics.ListCreateAPIView):
         serializer = TravelOfferSerializer(data=request.data, context={'request': request})
         try:
             serializer.is_valid(raise_exception=True)
-            serializer.save(user=user)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             return Response(e, status=status.HTTP_400_BAD_REQUEST)
 
     @permission_classes([IsAuthenticated])
     @authentication_classes([JWTAuthentication])
-    def delete(self, offerId, *args, **kwargs):
+    def delete(self, request, offerId):
         serializer = TravelOfferSerializer()
         try:
             serializer.delete(offerId)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except TravelOffer.DoesNotExist:
             return Response({"error": "Nie znaleziono takiej oferty"}, status=status.HTTP_404_NOT_FOUND)
+

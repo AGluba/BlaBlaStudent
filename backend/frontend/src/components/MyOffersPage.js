@@ -13,10 +13,12 @@ import {
 import TravelOfferCard from './TravelOfferCard';
 import AppAppBar from "./AppAppBar";
 import Footer from "./Footer";
+import EmissionInfo from "./EmissionInfo";
 
 
 const MyOffersPage = () => {
     const [offers, setOffers] = useState([]);
+    const [showEmissionInfo, setShowEmissionInfo] = useState(false);
     const token = localStorage.getItem('access_token');
 
     useEffect(() => {
@@ -34,6 +36,7 @@ const MyOffersPage = () => {
                     }
                 });
             setOffers(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error('Błąd podczas pobierania ofert:', error);
         }
@@ -41,12 +44,35 @@ const MyOffersPage = () => {
 
     const handleDeleteOffer = async (offerId) => {
         try {
-            await axios.delete(`/api/offers/${offerId}/`);
+            await axios.delete(`/api/offers/${offerId}/`, {
+                headers: {
+                    'Authorization': `JWT ${token}`,
+                }
+            });
             await fetchOffers();
         } catch (error) {
             console.error('Błąd podczas usuwania oferty:', error);
         }
     };
+
+    const handleEndOffer = async (offerId) => {
+        try {
+            await axios.put(`/api/offers-archive/${offerId}/`, {
+                headers: {
+                    'Authorization': `JWT ${token}`,
+                }
+            });
+            setOffers(offers.map(offer => offer.id === offerId ? {...offer, ended: true} : offer));
+            setShowEmissionInfo(true);
+            setTimeout(async () => {
+                await fetchOffers();
+                setShowEmissionInfo(false);
+            }, 4000);
+            return () => clearTimeout(timer);
+        } catch (error) {
+            console.error('Błąd podczas zakończenia oferty:', error);
+        }
+    }
 
     return (
         <div>
@@ -62,38 +88,53 @@ const MyOffersPage = () => {
                             component={Link}
                             to="/offers"
                             variant="contained"
-                            color="primary"
+                            color="secondary"
                             sx={{mb: 2}}
                         >
                             Dodaj nową ofertę
                         </Button>
-                        <Grid container spacing={3}>
-                            {offers.map((offer) => (
-                                <Grid item xs={12} md={12} key={offer.id}>
-                                    <TravelOfferCard offer={offer}/>
-                                    <Button
-                                        component={Link}
-                                        to={`/offers/edit/${offer.id}`}
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{mr: 1}}
-                                    >
-                                        Edytuj
-                                    </Button>
-                                    <Button
-                                        onClick={() => handleDeleteOffer(offer.id)}
-                                        variant="contained"
-                                        color="error"
-                                    >
-                                        Usuń
-                                    </Button>
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {showEmissionInfo ? <EmissionInfo/> : (
+                            <Grid container spacing={3}>
+                                {offers.filter(offer => offer.status === true).map((offer) => (
+                                    <Grid item xs={12} md={12} key={offer.id}>
+                                        <TravelOfferCard offer={offer}/>
+                                        {!offer.ended && (
+                                            <>
+                                                <Button
+                                                    onClick={() => handleEndOffer(offer.id)}
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    sx={{mr: 1, marginTop: 0.3}}
+                                                >
+                                                    Zakończ
+                                                </Button>
+                                                <Button
+                                                    component={Link}
+                                                    to={`/offers/edit/${offer.id}`}
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    sx={{mr: 1, marginTop: 0.3}}
+                                                >
+                                                    Edytuj
+                                                </Button>
+                                                <Button
+                                                    onClick={() => handleDeleteOffer(offer.id)}
+                                                    variant="contained"
+                                                    color="error"
+                                                    sx={{mr: 1, marginTop: 0.3}}
+                                                >
+                                                    Usuń
+                                                </Button>
+                                            </>
+                                        )}
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
                     </Box>
-                    <Footer></Footer>
                 </Container>
             </Box>
+            {showEmissionInfo ? <Footer></Footer> : <Footer></Footer>}
         </div>
     );
 };

@@ -136,12 +136,12 @@ export default function SearchTravelOffersForm() {
                             </Box>
                         )}
                         {!noOffers && (
-                            <Box sx={{marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <Box sx={{marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}} style={{width: '100%'}}>
                                 <Typography variant="h5" gutterBottom>
                                     Dostępne oferty podróży
                                 </Typography>
                                 {<Grid container spacing={3}>
-                                    {offers.map((offer) => (
+                                    {offers.filter(offer => offer.status === true).map((offer) => (
                                         <Grid item xs={12} md={12} key={offer.id}>
                                             <TravelOfferCard offer={offer}/>
                                         </Grid>

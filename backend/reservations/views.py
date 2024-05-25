@@ -18,11 +18,10 @@ def get_all_reservations():
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def get_reservation(request, *args, **kwargs):
+def get_reservation(*args, **kwargs):
     try:
-        user_id = request.user.id
         travel_id = kwargs.get('travel_id')
-        reservation = Reservation.objects.filter(user_id=user_id, travel_offer_id=travel_id)
+        reservation = Reservation.objects.filter(travel_offer_id=travel_id)
         serializer = ReservationSerializer(reservation, many=True)
         return Response(serializer.data)
     except Reservation.DoesNotExist:

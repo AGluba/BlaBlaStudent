@@ -28,19 +28,6 @@ def check_username_exists(request):
         return Response({'username_exists': False}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def logout(request):
-    try:
-        refresh_token = request.data["refresh"]
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-
-        return Response(status=status.HTTP_205_RESET_CONTENT)
-    except Exception as e:
-        return Response({'error': str(request.data)}, status=status.HTTP_400_BAD_REQUEST)
-
-
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -73,22 +60,3 @@ def activate_user(request):
         print("Error:", response.text)
         return Response({'error': 'Activation failed.'}, status=response.status_code)
 
-@api_view(['PUT'])
-@permission_classes([permissions.IsAuthenticated])
-def update_user_profile(request):
-    user = request.user
-    data = request.data
-    user.first_name = data.get('first_name', user.first_name)
-    user.last_name = data.get('last_name', user.last_name)
-    user.email = data.get('email', user.email)
-    user.save()
-
-    return Response({
-        'id': user.id,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'email': user.email,
-        'username': user.username,
-        'is_active': user.is_active,
-        'status': user.status
-    }, status=status.HTTP_200_OK)

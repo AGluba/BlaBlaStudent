@@ -1,57 +1,110 @@
+from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError as RestValidationError
 from django.db import models
 from django.utils import timezone
 
 from core.models import User
 
+
+
+
+
 class TravelOfferManager(models.Manager):
-    @staticmethod
-    def validation(title, description, price, date, place_departure, place_arrival, number_of_seats, user):
-        if not title or not description or not price or not date or not place_departure or not place_arrival or not number_of_seats or not user:
-            return False
-        if number_of_seats <= 0 or price < 0:
-            return False
-        if date < timezone.now() or place_departure == place_arrival:
-            return False
+
+    def validation(self, title, desc, price, date, place_departure, place_arrival, number_of_seats, phone_number):
+        errors = {
+            'title': [],
+            'desc': [],
+            'price': [],
+            'date': [],
+            'place_departure': [],
+            'place_arrival': [],
+            'number_of_seats': [],
+            'phone_number': [],
+            'car': []
+        }
+        # if not Car.objects.exists():
+        #     errors['car'].append("Dodaj samochód, aby móc dodać ofertę podróży.")
+        # else:
+        #     if number_of_seats > Car.capacity - 1:
+        #         errors['number_of_seats'].append("Liczba miejsc nie może być większa od miejsc w samochodzie.")
+        if not title:
+            errors['title'].append("To pole nie może być puste.")
+        if not desc:
+            errors['desc'].append("To pole nie może być puste.")
+        if not price:
+            errors['price'].append("To pole nie może być puste.")
+        if price <= 0:
+            errors['price'].append("Cena musi być większa od 0.")
+        if not number_of_seats:
+            errors['number_of_seats'].append("To pole nie może być puste.")
+        if number_of_seats < 1:
+            errors['number_of_seats'].append("Liczba miejsc musi być większa od 1.")
+        if not date:
+            errors['date'].append("To pole nie może być puste.")
+        if date < timezone.now():
+            errors['date'].append("Data nie może być z przeszłości.")
+        if not place_departure:
+            errors['place_departure'].append("To pole nie może być puste.")
+        if not place_arrival:
+            errors['place_arrival'].append("To pole nie może być puste.")
+        if place_arrival == place_departure:
+            errors['place_departure'].append("Miejsce wyjazdu i przyjazdu muszą być różne.")
+            errors['place_arrival'].append("Miejsce wyjazdu i przyjazdu muszą być różne.")
         if not isinstance(price, float):
-            return False
+            errors['price'].append("Cena musi być liczbą.")
+        if not isinstance(number_of_seats, int):
+            errors['number_of_seats'].append("Liczba miejsc musi być liczbą całkowitą.")
+        if not phone_number:
+            errors['phone_number'].append("To pole nie może być puste.")
+        if len(phone_number) < 9:
+            errors['phone_number'].append("Numer telefonu musi mieć conajmniej 9 cyfr.")
+
+        errors = {field: error_list for field, error_list in errors.items() if error_list}
+
+        if errors:
+            raise ValidationError(errors)
         return True
-        # if not User.objects.filter(id=User.username).exists():
-        #     raise ValueError('User does not exist')
-        # if number_of_seats > Vehicle.objects.filter(user_id=user_id).first().number_of_seats:
-        #     raise ValueError('Number of seats must be less than or equal to the number of seats in vehicle')
 
-
-    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user):
-        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user)
-        travel_offer = self.model(
-            title=title,
-            description=description,
-            price=price,
-            date_departure=date_departure,
-            place_departure=place_departure,
-            place_arrival=place_arrival,
-            number_of_seats=number_of_seats,
-            user_id=user.id,
-            status=True
-        )
-        travel_offer.save()
-
-        return travel_offer
+    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user, phone_number, status):
+        try:
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
+            travel_offer = self.model(
+                title=title,
+                description=description,
+                price=price,
+                date_departure=date_departure,
+                place_departure=place_departure,
+                place_arrival=place_arrival,
+                number_of_seats=number_of_seats,
+                phone_number=phone_number,
+                user_id=user.id,
+                status=True
+            )
+            travel_offer.full_clean()
+            travel_offer.save()
+            return travel_offer
+        except ValidationError as e:
+            raise RestValidationError(e.message_dict)
 
     def update_travel_offer(self, id, title, description, price, date_departure, place_departure, place_arrival,
-                            number_of_seats, user):
-        self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user)
-        travel_offer = self.get(id=id)
-        travel_offer.title = title
-        travel_offer.description = description
-        travel_offer.price = price
-        travel_offer.date_departure = date_departure
-        travel_offer.place_departure = place_departure
-        travel_offer.place_arrival = place_arrival
-        travel_offer.number_of_seats = number_of_seats
-        travel_offer.save()
-
-        return travel_offer
+                            number_of_seats, phone_number):
+        try:
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
+            travel_offer = self.get(id=id)
+            travel_offer.title = title
+            travel_offer.description = description
+            travel_offer.price = price
+            travel_offer.date_departure = date_departure
+            travel_offer.place_departure = place_departure
+            travel_offer.place_arrival = place_arrival
+            travel_offer.number_of_seats = number_of_seats
+            travel_offer.phone_number = phone_number
+            travel_offer.full_clean()
+            travel_offer.save()
+            return travel_offer
+        except ValidationError as e:
+            raise ValidationError(str(e))
 
     def delete_travel_offer(self, id):
         travel_offer = self.get(id=id)
@@ -66,6 +119,27 @@ class TravelOfferManager(models.Manager):
 
         return travel_offer
 
+    def request_stop(self, user, travel_offer, place_stop):
+        stop_request = StopRequest.objects.create(
+            user=user,
+            travel_offer=travel_offer,
+            place_stop=place_stop
+        )
+        return stop_request
+
+    def accept_stop_request(self, stop_request_id):
+        stop_request = StopRequest.objects.get(id=stop_request_id)
+        stop_request.is_accepted = True
+        stop_request.save()
+
+        travel_offer = stop_request.travel_offer
+        travel_offer.place_arrival = stop_request.place_stop
+        travel_offer.save()
+        return stop_request
+
+
+
+
 
 class TravelOffer(models.Model):
     id = models.AutoField(primary_key=True)
@@ -78,8 +152,20 @@ class TravelOffer(models.Model):
     place_arrival = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     number_of_seats = models.IntegerField()
+    phone_number = models.CharField(max_length=20)
 
     objects = TravelOfferManager()
 
     def __str__(self):
         return self.title
+
+
+class StopRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    travel_offer = models.ForeignKey(TravelOffer, on_delete=models.CASCADE)
+    place_stop = models.CharField(max_length=255)
+    is_accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} requested stop at {self.place_stop}'

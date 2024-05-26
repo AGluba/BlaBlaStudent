@@ -11,29 +11,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import StopIcon from '@mui/icons-material/Stop';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import axios from "axios";
-import EmissionInfo from "./EmissionInfo";
+import axios from 'axios';
 
 const TravelOfferCard = ({ offer }) => {
-<<<<<<< Updated upstream
-  const { title, description, place_departure, place_arrival } = offer;
-
-  return (
-    <Card raised>
-      <CardContent>
-        <Typography variant="h5" component="div">{title}</Typography>
-        <Typography color="textSecondary" gutterBottom>{description}</Typography>
-        <Typography variant="body2" color="textSecondary">
-          Wyjazd: {place_departure}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Przyjazd: {place_arrival}
-        </Typography>
-        <GoogleMapDisplay origin={place_departure} destination={place_arrival} />
-      </CardContent>
-    </Card>
-  );
-=======
     const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats, user_id } = offer;
     const departureDate = new Date(date_departure).toLocaleString('pl-PL', {
         day: '2-digit',
@@ -48,6 +28,7 @@ const TravelOfferCard = ({ offer }) => {
     const [reservationId, setReservationId] = useState(null);
     const [showStopForm, setShowStopForm] = useState(false);
     const [stopLocation, setStopLocation] = useState('');
+    const [stops, setStops] = useState([]);
     const userData = JSON.parse(localStorage.getItem('user_data'));
 
     useEffect(() => {
@@ -71,14 +52,33 @@ const TravelOfferCard = ({ offer }) => {
             }
         };
 
-        fetchData().then(r => console.log('Pobrano rezerwacje'));
+        fetchData();
+    }, [id, userData.id]);
+
+    useEffect(() => {
+        const fetchStops = async () => {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await axios.get(`http://localhost:8000/api/stop-requests/travel-offer/${id}/`, {
+                    headers: {
+                        'Authorization': `JWT ${token}`,
+                    }
+                });
+                const acceptedStops = response.data.filter(stop => stop.is_accepted);
+                setStops(acceptedStops);
+            } catch (error) {
+                console.error('Wystąpił błąd podczas pobierania przystanków:', error);
+            }
+        };
+
+        fetchStops();
     }, [id]);
 
     const handleSeatToggle = async () => {
         if (reservationId) {
             try {
                 const token = localStorage.getItem('access_token');
-                await axios.delete(`http://localhost:8000/api/reservations/delete/${id}/`, {
+                await axios.delete(`http://localhost:8000/api/reservations/delete/${reservationId}/`, {
                     headers: {
                         'Authorization': `JWT ${token}`,
                     }
@@ -90,17 +90,17 @@ const TravelOfferCard = ({ offer }) => {
             }
         } else {
             if (occupiedSeats < totalSeats) {
-                setOccupiedSeats(occupiedSeats + 1);
                 try {
                     const userData = JSON.parse(localStorage.getItem('user_data'));
                     const token = localStorage.getItem('access_token');
                     const userId = userData.id;
-                    await axios.post(`http://localhost:8000/api/reservations/add/`, { travel_id: id, user_id: userId }, {
+                    const response = await axios.post(`http://localhost:8000/api/reservations/add/`, { travel_id: id, user_id: userId }, {
                         headers: {
                             'Authorization': `JWT ${token}`,
                         }
                     });
-                    setReservationId(id);
+                    setReservationId(response.data.id);
+                    setOccupiedSeats(occupiedSeats + 1);
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }
@@ -112,35 +112,32 @@ const TravelOfferCard = ({ offer }) => {
         setShowStopForm(true);
     };
 
-const handleStopFormSubmit = async (event) => {
-    event.preventDefault();
-    const token = localStorage.getItem('access_token');
-    const requestData = {
-    place_stop: stopLocation,
-    user_id: userData.id,
-    travel_offer_id: id,
-    is_accepted: false,
-    created_at: new Date().toISOString()
-};
+    const handleStopFormSubmit = async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('access_token');
+        const requestData = {
+            place_stop: stopLocation,
+            user_id: userData.id,
+            travel_offer_id: id,
+            is_accepted: false,
+            created_at: new Date().toISOString()
+        };
 
-    try {
-        console.log('Sending request to request-stop:', requestData);
+        try {
+            const response = await axios.post(`http://localhost:8000/api/offers/${id}/request-stop/`, requestData, {
+                headers: {
+                    'Authorization': `JWT ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        const response = await axios.post(`http://localhost:8000/api/offers/${id}/request-stop/`, requestData, {
-            headers: {
-                'Authorization': `JWT ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        console.log('Response:', response.data);
-        alert('Prośba o dodanie przystanku została wysłana.');
-        setShowStopForm(false);
-        setStopLocation('');
-    } catch (error) {
-        console.error('Wystąpił błąd podczas wysyłania prośby o dodanie przystanku:', error.response ? error.response.data : error.message);
-    }
-};
+            alert('Prośba o dodanie przystanku została wysłana.');
+            setShowStopForm(false);
+            setStopLocation('');
+        } catch (error) {
+            console.error('Wystąpił błąd podczas wysyłania prośby o dodanie przystanku:', error.response ? error.response.data : error.message);
+        }
+    };
 
     const renderSeats = () => {
         const seats = [];
@@ -221,10 +218,9 @@ const handleStopFormSubmit = async (event) => {
                     </form>
                 </CardContent>
             )}
-            <GoogleMapDisplay origin={place_departure} destination={place_arrival} />
+            <GoogleMapDisplay origin={place_departure} destination={place_arrival} stops={stops.map(stop => stop.place_stop)} />
         </Card>
     );
->>>>>>> Stashed changes
 };
 
 export default TravelOfferCard;

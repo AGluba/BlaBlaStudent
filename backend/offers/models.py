@@ -138,9 +138,6 @@ class TravelOfferManager(models.Manager):
         return stop_request
 
 
-
-
-
 class TravelOffer(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

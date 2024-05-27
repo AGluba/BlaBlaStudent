@@ -10,7 +10,6 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 import EmissionInfo from "./EmissionInfo";
-import {CircularProgress} from "@mui/material";
 
 const TravelOfferCard = ({offer}) => {
     const {
@@ -39,7 +38,10 @@ const TravelOfferCard = ({offer}) => {
     const userData = JSON.parse(localStorage.getItem('user_data'));
 
     useEffect(() => {
-        const fetchData = async () => {
+        fetchData().then(r => console.log('Pobrano rezerwacje'));
+    }, [id, user_id, userData.id]);
+
+    const fetchData = async () => {
             try {
                 const token = localStorage.getItem('access_token');
 
@@ -67,9 +69,6 @@ const TravelOfferCard = ({offer}) => {
             }
         };
 
-        fetchData().then(r => r);
-    }, [id, user_id, userData.id]);
-
     const handleSeatToggle = async () => {
         if (reservationId) {
             try {
@@ -79,7 +78,7 @@ const TravelOfferCard = ({offer}) => {
                         'Authorization': `JWT ${token}`,
                     }
                 });
-                setOccupiedSeats(prevOccupiedSeats => prevOccupiedSeats - 1);
+                setOccupiedSeats(occupiedSeats - 1);
                 setReservationId(null);
             } catch (error) {
                 console.error('Wystąpił błąd podczas usuwania rezerwacji:', error);
@@ -98,7 +97,7 @@ const TravelOfferCard = ({offer}) => {
                         }
                     });
                     setReservationId(response.data.id);
-                    setOccupiedSeats(prevOccupiedSeats => prevOccupiedSeats + 1);
+                    setOccupiedSeats(occupiedSeats + 1);
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }
@@ -130,7 +129,6 @@ const TravelOfferCard = ({offer}) => {
         }
         return seats;
     };
-
 
     return (
         <Card raised sx={{borderRadius: '10px'}}>

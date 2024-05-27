@@ -23,6 +23,7 @@ LANGUAGE_CODE = 'pl-pl'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     # 'translations',
     'car',
     'reservations',
+    'channels',
+    'notifications',
     'opinion',
 ]
 
@@ -71,7 +74,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'blablas.wsgi.application'
+#WSGI_APPLICATION = 'blablas.wsgi.application'
+ASGI_APPLICATION = 'blablas.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -115,6 +119,21 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
 }
 
 DJOSER = {
@@ -175,3 +194,9 @@ AUTH_USER_MODEL = 'core.User'
 CORS_ORIGIN_ALLOW_ALL = True
 
 SITE_NAME = 'Blablas'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer"
+    }
+}

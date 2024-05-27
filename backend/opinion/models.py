@@ -14,52 +14,45 @@ def validate_opinion(opinion, rate):
 
 
 class OpinionManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
 
-    def create_opinion(self, user, travel_offer, opinion, rate):
-        validate_opinion(opinion, rate)
-        opinion = self.model(
-            user=user,
-            travel_offer=travel_offer,
-            opinion=opinion,
-            rate=rate
-        )
-        opinion.full_clean()
-        opinion.save()
-        return opinion
-
-    def update_opinion(self, id, opinion, rate):
-        validate_opinion(opinion, rate)
-        opinion = self.get(id=id)
-        opinion.opinion = opinion
-        opinion.rate = rate
-        opinion.full_clean()
-        opinion.save()
-        return opinion
+    def create_opinion(self, user, reservation, opinion, rate):
+        try:
+            validate_opinion(opinion, rate)
+            opinion = self.model(
+                user=user,
+                reservation=reservation,
+                opinion=opinion,
+                rate=rate
+            )
+            opinion.full_clean()
+            opinion.save()
+            return opinion
+        except ValidationError as e:
+            raise ValidationError(e.message_dict)
 
     def delete_opinion(self, id):
         opinion = self.get(id=id)
-        opinion.is_active = False
-        opinion.save()
+        opinion.delete()
         return opinion
 
-    def get_opinions_by_travel_offer(self, travel_offer):
-        return self.get_queryset().filter(travel_offer=travel_offer)
-
-    def get_opinions_by_user(self, user):
-        return self.get_queryset().filter(user=user)
-
-    def get_opinion(self, id):
-        return self.get_queryset().get(id=id)
+    def update_opinion(self, id, opinion, rate):
+        try:
+            validate_opinion(opinion, rate)
+            opinion = self.get(id=id)
+            opinion.opinion = opinion
+            opinion.rate = rate
+            opinion.full_clean()
+            opinion.save()
+            return opinion
+        except ValidationError as e:
+            raise ValidationError(e.message_dict)
 
 
 class Opinion(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.CASCADE)
-    travel_offer = models.ForeignKey('offers.TravelOffer', on_delete=models.CASCADE)
+    reservation = models.ForeignKey('reservations.Reservation', on_delete=models.CASCADE)
     opinion = models.TextField()
     rate = models.IntegerField()
-    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

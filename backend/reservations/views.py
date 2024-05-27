@@ -46,11 +46,9 @@ def create_reservation(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def delete_reservation(request, *args, **kwargs):
+def delete_reservation(request, reservation_id):
     try:
-        user_id = request.user.id
-        travel_id = kwargs.get('travel_id')
-        reservation = Reservation.objects.filter(user_id=user_id, travel_offer_id=travel_id)
+        reservation = Reservation.objects.get(id=reservation_id)
         reservation.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     except Reservation.DoesNotExist:

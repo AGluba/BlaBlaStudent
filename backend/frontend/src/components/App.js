@@ -15,6 +15,7 @@ import MyOffersPage from './MyOffersPage';
 import EditOfferPage from "./EditOfferPage";
 import OfferDetailsPage from "./OfferDetailsPage";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
+import MyTravelsPage from "./MyTravelsPage";
 
 const theme = createTheme(
     {
@@ -46,6 +47,7 @@ const App = () => {
                     <Route path="/auth/reset-password/:uid/:token" element={<TypeNewPassword />} />
                     <Route path="offers/edit/:id" element={<EditOfferPage/>}/>
                     <Route path='offers/:id' element={<OfferDetailsPage/>}/>
+                    <Route path='my-travels' element={<MyTravelsPage/>}/>
                 </Routes>
             </Router>
         </ThemeProvider>

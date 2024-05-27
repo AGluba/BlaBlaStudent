@@ -8,6 +8,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Reservation
 from .serializers import ReservationSerializer
 
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_all_reservations():
@@ -44,11 +46,9 @@ def create_reservation(request):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([JWTAuthentication])
-def delete_reservation(request, *args, **kwargs):
+def delete_reservation(request, reservation_id):
     try:
-        user_id = request.user.id
-        travel_id = kwargs.get('travel_id')
-        reservation = Reservation.objects.filter(user_id=user_id, travel_offer_id=travel_id)
+        reservation = Reservation.objects.get(id=reservation_id)
         reservation.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     except Reservation.DoesNotExist:
@@ -79,5 +79,20 @@ def delete_confirmation(request, *args, **kwargs):
         reservation.delete_confirm()
         reservation.save()
         return Response(status=status.HTTP_200_OK)
+    except Reservation.DoesNotExist:
+        return Response({"error": "Nie udało się znaleźć tej rezerwacji"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def get_offer_by_user(request, user_id, *args, **kwargs):
+    try:
+        reservation = Reservation.objects.filter(user_id=user_id)
+        serializer = ReservationSerializer(reservation, many=True)
+        offers = []
+        for res in serializer.data:
+            offers.append(res['travel_offer_id'])
+
+        return Response(offers)
     except Reservation.DoesNotExist:
         return Response({"error": "Nie udało się znaleźć tej rezerwacji"}, status=status.HTTP_404_NOT_FOUND)

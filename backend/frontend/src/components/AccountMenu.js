@@ -10,6 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import PersonIcon from '@mui/icons-material/Person';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import CardTravelIcon from '@mui/icons-material/CardTravel';
 import Tooltip from '@mui/material/Tooltip';
 import {Link, useNavigate} from 'react-router-dom';
 
@@ -74,6 +75,9 @@ export default function AccountMenu() {
                         </MenuItem>
                         <MenuItem component={Link} to="/my-offers">
                             <LocalOfferIcon sx={{marginRight: 1}}></LocalOfferIcon> Moje oferty
+                        </MenuItem>
+                        <MenuItem component={Link} to="/my-travels">
+                            <CardTravelIcon sx={{marginRight: 1}}></CardTravelIcon> Moje podróże
                         </MenuItem>
                         <Divider/>
                         <MenuItem onClick={handleLogout}>

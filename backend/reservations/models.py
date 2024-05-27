@@ -11,7 +11,6 @@ class ReservationManager(models.Manager):
             'user': [],
             'travel_offer': []
         }
-
         if not user:
             errors['user'].append('To pole nie może być puste')
         if not travel_offer:
@@ -22,6 +21,14 @@ class ReservationManager(models.Manager):
             errors['travel_offer'].append('Brak wolnych miejsc')
         if not travel_offer.status:
             errors['travel_offer'].append('Oferta nieaktywna')
+        if self.filter(user=user, travel_offer=travel_offer).exists():
+            errors['travel_offer'].append('Już zarezerwowałeś tę ofertę')
+
+        errors = {field: error_list for field, error_list in errors.items() if error_list}
+
+        if errors:
+            raise RestValidationError(errors)
+        return True
 
     def create_reservation(self, user, travel_offer):
         try:

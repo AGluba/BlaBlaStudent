@@ -34,7 +34,7 @@ class ReservationSerializer(serializers.ModelSerializer):
         except ValidationError as e:
             raise ValidationError(str(e))
 
-    def delete_confirm(self, reservation_id):
+    def reservation_delete(self, reservation_id):
         try:
             reservation = Reservation.objects.delete_confirmation(reservation_id)
             return reservation

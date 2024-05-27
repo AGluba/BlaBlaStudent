@@ -30,7 +30,7 @@ class TravelOfferSerializer(serializers.ModelSerializer):
         except ValidationError as e:
             raise ValidationError(str(e))
 
-    def delete(self, offer_id):
+    def delete_reservation(self, offer_id):
         try:
             travel_offer = TravelOffer.objects.delete_travel_offer(offer_id)
             return travel_offer

@@ -56,7 +56,7 @@ const TravelOfferCard = ({ offer }) => {
             }
         };
 
-        fetchData();
+        fetchData().then(r => r);
     }, [id, user_id, userData.id]);
 
     const handleSeatToggle = async () => {
@@ -68,7 +68,7 @@ const TravelOfferCard = ({ offer }) => {
                         'Authorization': `JWT ${token}`,
                     }
                 });
-                setOccupiedSeats(occupiedSeats - 1);
+                setOccupiedSeats(prevOccupiedSeats => prevOccupiedSeats - 1);
                 setReservationId(null);
             } catch (error) {
                 console.error('Wystąpił błąd podczas usuwania rezerwacji:', error);
@@ -84,7 +84,7 @@ const TravelOfferCard = ({ offer }) => {
                         }
                     });
                     setReservationId(response.data.id);
-                    setOccupiedSeats(occupiedSeats + 1);
+                    setOccupiedSeats(prevOccupiedSeats => prevOccupiedSeats + 1);
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }

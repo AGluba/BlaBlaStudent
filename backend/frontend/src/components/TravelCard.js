@@ -9,9 +9,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
-import EmissionInfo from "./EmissionInfo";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating} from "@mui/material";
 
-const TravelOfferCard = ({offer}) => {
+const TravelCard = ({offer}) => {
     const {
         id,
         title,
@@ -36,6 +36,21 @@ const TravelOfferCard = ({offer}) => {
     const [reservationId, setReservationId] = useState(null);
     const [username, setUsername] = useState('');
     const userData = JSON.parse(localStorage.getItem('user_data'));
+    const cardStyle = offer.status ? {} : {opacity: '0.5'};
+    const [open, setOpen] = useState(false);
+    const [rating, setRating] = useState(0);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    const handleRatingChange = (event, newValue) => {
+        setRating(newValue);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,6 +76,7 @@ const TravelOfferCard = ({offer}) => {
                     }
                 });
                 setUsername(userResponse.data.username);
+                console.log(cardStyle);
             } catch (error) {
                 console.error('Wystąpił błąd podczas pobierania danych:', error);
             }
@@ -116,13 +132,13 @@ const TravelOfferCard = ({offer}) => {
         }
         if (reservationId) {
             seats.push(
-                <IconButton key="delete" onClick={handleSeatToggle}>
+                <IconButton key="delete" onClick={handleSeatToggle} disabled={!offer.status}>
                     <DeleteIcon fontSize="large"/>
                 </IconButton>
             );
         } else {
             seats.push(
-                <IconButton key="add" onClick={handleSeatToggle} disabled={userData.id === user_id}>
+                <IconButton key="add" onClick={handleSeatToggle} disabled={userData.id === user_id || !offer.status}>
                     <AddIcon fontSize="large"/>
                 </IconButton>
             );
@@ -131,7 +147,7 @@ const TravelOfferCard = ({offer}) => {
     };
 
     return (
-        <Card raised sx={{borderRadius: '10px'}}>
+        <Card raised sx={{borderRadius: '10px', ...cardStyle}}>
             <CardContent style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <div>
                     <Typography variant="h5" component="div">
@@ -156,13 +172,40 @@ const TravelOfferCard = ({offer}) => {
                         Użytkownik: {username}
                     </Typography>
                 </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    {renderSeats()}
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <div style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center'}}>
+                        {renderSeats()}
+                    </div>
+                    <div>
+                        <Button variant="outlined" onClick={handleClickOpen}>
+                            Oceń
+                        </Button>
+                        <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle style={{textAlign: 'center'}}>Oceń kierowcę</DialogTitle>
+                            <DialogContent style={{textAlign: 'center'}}>
+                                <DialogContentText>
+                                    Proszę ocenić kierowcę w skali od 1 do 5.
+                                </DialogContentText>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={rating}
+                                    onChange={handleRatingChange}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>
+                                    Anuluj
+                                </Button>
+                                <Button onClick={handleClose}>
+                                    Potwierdź
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
                 </div>
             </CardContent>
-            <GoogleMapDisplay origin={place_departure} destination={place_arrival}/>
         </Card>
     );
 };
 
-export default TravelOfferCard;
+export default TravelCard;

@@ -8,4 +8,5 @@ urlpatterns = [
     path('reservations/delete/<int:travel_id>/', delete_reservation, name='delete_reservation'),
     path('reservations/confirm/<int:travel_id>/', confirm_reservation, name='confirm_reservation'),
     path('reservations/delete-confirmation/<int:travel_id>/', delete_confirmation, name='delete_confirmation'),
+    path('reservations/offer_by_user/<int:user_id>/', get_offer_by_user, name='get_offer_by_user'),
 ]

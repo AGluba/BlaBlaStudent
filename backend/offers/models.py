@@ -58,7 +58,7 @@ class TravelOfferManager(models.Manager):
             raise RestValidationError(errors)
         return True
 
-    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user, phone_number):
+    def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user, phone_number, status):
         try:
             self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
             travel_offer = self.model(

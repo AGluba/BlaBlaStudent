@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Box from "@mui/material/Box";
-import { AppBar, Toolbar, IconButton, Badge, List, ListItem, ListItemText, ListItemSecondaryAction, Menu } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Badge, List, ListItem, ListItemText, ListItemSecondaryAction, Popover } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
@@ -48,6 +48,7 @@ export default function AppAppBar() {
     };
 
     const open = Boolean(anchorEl);
+    const id = open ? 'notifications-popover' : undefined;
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
@@ -68,12 +69,20 @@ export default function AppAppBar() {
                                     <NotificationsIcon />
                                 </Badge>
                             </IconButton>
-                            <Menu
-                                anchorEl={anchorEl}
+                            <Popover
+                                id={id}
                                 open={open}
+                                anchorEl={anchorEl}
                                 onClose={handleNotificationsClose}
-                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                style={{ marginTop: '15px' }}
                             >
                                 <List>
                                     {notifications.length === 0 ? (
@@ -91,7 +100,7 @@ export default function AppAppBar() {
                                         ))
                                     )}
                                 </List>
-                            </Menu>
+                            </Popover>
                         </>
                     )}
                     <AccountMenu />

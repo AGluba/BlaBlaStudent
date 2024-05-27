@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from "@mui/material/Box";
 import { AppBar, Toolbar, IconButton, Badge, List, ListItem, ListItemText, ListItemSecondaryAction, Popover } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -56,6 +56,7 @@ export default function AppAppBar() {
         <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
             <AppBar position="static" sx={{ borderRadius: '10px' }}>
                 <Toolbar>
+                    <img src={logo} alt="logo" style={{ width: '65px', height: '65px'}} />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         BlaBlaS
                     </Typography>

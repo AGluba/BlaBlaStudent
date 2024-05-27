@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
 import AccountMenu from "./AccountMenu";
 import React from "react";
-
+import logo from '../../static/images/logo_blablas.png';
 
 export default function AppAppBar() {
     const storedUser = localStorage.getItem('user_data');
@@ -14,6 +14,7 @@ export default function AppAppBar() {
         <Box sx={{display: 'flex', flexDirection: 'column', padding: 1}}>
             <AppBar position="static" sx={{borderRadius: '10px'}}>
                 {storedUser ? (<Toolbar>
+                        <img src={logo} alt="logo" style={{width: '65px', height: '65px'}}/>
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             BlaBlaS
                         </Typography>
@@ -27,6 +28,7 @@ export default function AppAppBar() {
                     </Toolbar>
                 ) : (
                     <Toolbar>
+                        <img src={logo} alt="logo" style={{width: '65px', height: '65px'}}/>
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             BlaBlaS
                         </Typography>

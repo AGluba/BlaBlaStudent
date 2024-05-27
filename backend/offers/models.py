@@ -5,9 +5,12 @@ from django.utils import timezone
 
 from core.models import User
 
+from car.models import Car
+
+
 class TravelOfferManager(models.Manager):
 
-    def validation(self, title, desc, price, date, place_departure, place_arrival, number_of_seats, phone_number):
+    def validation(self, title, desc, price, date, place_departure, place_arrival, number_of_seats, phone_number, user_id):
         errors = {
             'title': [],
             'desc': [],
@@ -51,6 +54,8 @@ class TravelOfferManager(models.Manager):
             errors['phone_number'].append("To pole nie może być puste.")
         elif len(phone_number) < 9:
             errors['phone_number'].append("Numer telefonu musi mieć co najmniej 9 cyfr.")
+        if Car.objects.filter(user_id=user_id).count() == 0:
+            errors['car'].append("Musisz dodać samochód do swojego profilu.")
 
         errors = {field: error_list for field, error_list in errors.items() if error_list}
 
@@ -60,7 +65,7 @@ class TravelOfferManager(models.Manager):
 
     def create_travel_offer(self, title, description, price, date_departure, place_departure, place_arrival, number_of_seats, user, phone_number, status):
         try:
-            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number, user.id)
             travel_offer = self.model(
                 title=title,
                 description=description,
@@ -80,9 +85,9 @@ class TravelOfferManager(models.Manager):
             raise RestValidationError(e.message_dict)
 
     def update_travel_offer(self, id, title, description, price, date_departure, place_departure, place_arrival,
-                            number_of_seats, phone_number):
+                            number_of_seats, phone_number, user):
         try:
-            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number)
+            self.validation(title, description, price, date_departure, place_departure, place_arrival, number_of_seats, phone_number, user.id)
             travel_offer = self.get(id=id)
             travel_offer.title = title
             travel_offer.description = description

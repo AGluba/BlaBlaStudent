@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 import EmissionInfo from "./EmissionInfo";
+import {CircularProgress} from "@mui/material";
 
 const TravelOfferCard = ({ offer }) => {
     const { id, title, description, place_departure, place_arrival, price, date_departure, number_of_seats, user_id } = offer;
@@ -116,6 +117,7 @@ const TravelOfferCard = ({ offer }) => {
         }
         return seats;
     };
+
 
     return (
         <Card raised sx={{ borderRadius: '10px' }}>

@@ -5,7 +5,7 @@ from .models import Opinion
 from .serializers import OpinionSerializer
 from rest_framework.response import Response
 
-from models import TravelOffer
+from offers.models import TravelOffer
 
 
 @api_view(['GET'])
@@ -35,7 +35,7 @@ def delete_opinion(request, opinion_id):
 @permission_classes([IsAuthenticated])
 def update_opinion(request, opinion_id):
     serializer = OpinionSerializer()
-    serializer.update_opinion(opinion_id, request.data)
+    serializer.update(opinion_id, request.data)
     return Response(status=200)
 
 @api_view(['GET'])

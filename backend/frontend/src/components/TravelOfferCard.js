@@ -80,6 +80,7 @@ const TravelOfferCard = ({offer}) => {
                 });
                 setOccupiedSeats(occupiedSeats - 1);
                 setReservationId(null);
+                fetchData();
             } catch (error) {
                 console.error('Wystąpił błąd podczas usuwania rezerwacji:', error);
             }
@@ -98,6 +99,7 @@ const TravelOfferCard = ({offer}) => {
                     });
                     setReservationId(response.data.id);
                     setOccupiedSeats(occupiedSeats + 1);
+                    fetchData();
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }

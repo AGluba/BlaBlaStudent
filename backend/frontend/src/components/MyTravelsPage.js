@@ -20,7 +20,6 @@ import TravelCard from "./TravelCard";
 const MyTravelsPage = () => {
     const [offers, setOffers] = useState([]);
     const [offersId, setOffersId] = useState([]);
-    const [showEmissionInfo, setShowEmissionInfo] = useState(false);
     const token = localStorage.getItem('access_token');
     const storedUser = JSON.parse(localStorage.getItem('user_data'));
 

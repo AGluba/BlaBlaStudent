@@ -53,7 +53,10 @@ const TravelCard = ({offer}) => {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
+        fetchData();
+    }, [id, user_id, userData.id]);
+
+     const fetchData = async () => {
             try {
                 const token = localStorage.getItem('access_token');
 
@@ -82,9 +85,6 @@ const TravelCard = ({offer}) => {
             }
         };
 
-        fetchData();
-    }, [id, user_id, userData.id]);
-
     const handleSeatToggle = async () => {
         if (reservationId) {
             try {
@@ -96,6 +96,7 @@ const TravelCard = ({offer}) => {
                 });
                 setOccupiedSeats(occupiedSeats - 1);
                 setReservationId(null);
+                fetchData();
             } catch (error) {
                 console.error('Wystąpił błąd podczas usuwania rezerwacji:', error);
             }
@@ -114,6 +115,7 @@ const TravelCard = ({offer}) => {
                     });
                     setReservationId(response.data.id);
                     setOccupiedSeats(occupiedSeats + 1);
+                    fetchData();
                 } catch (error) {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }

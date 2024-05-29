@@ -8,8 +8,10 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from "axios";
-import EmissionInfo from "./EmissionInfo";
+import StopIcon from '@mui/icons-material/Stop';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 const TravelOfferCard = ({offer}) => {
     const {
@@ -35,6 +37,9 @@ const TravelOfferCard = ({offer}) => {
     const [totalSeats] = useState(number_of_seats);
     const [reservationId, setReservationId] = useState(null);
     const [username, setUsername] = useState('');
+    const [showStopForm, setShowStopForm] = useState(false);
+    const [stopLocation, setStopLocation] = useState('');
+    const [stops, setStops] = useState([]);
     const userData = JSON.parse(localStorage.getItem('user_data'));
 
     useEffect(() => {
@@ -68,6 +73,25 @@ const TravelOfferCard = ({offer}) => {
                 console.error('Wystąpił błąd podczas pobierania danych:', error);
             }
         };
+
+     useEffect(() => {
+        const fetchStops = async () => {
+            try {
+                const token = localStorage.getItem('access_token');
+                const response = await axios.get(`http://localhost:8000/api/stop-requests/travel-offer/${id}/`, {
+                    headers: {
+                        'Authorization': `JWT ${token}`,
+                    }
+                });
+                const acceptedStops = response.data.filter(stop => stop.is_accepted);
+                setStops(acceptedStops);
+            } catch (error) {
+                console.error('Wystąpił błąd podczas pobierania przystanków:', error);
+            }
+        };
+
+        fetchStops();
+    }, [id]);
 
     const handleSeatToggle = async () => {
         if (reservationId) {
@@ -104,6 +128,37 @@ const TravelOfferCard = ({offer}) => {
                     console.error('Wystąpił błąd podczas dodawania rezerwacji:', error);
                 }
             }
+        }
+    };
+
+    const handleAddStopRequest = () => {
+        setShowStopForm(true);
+    };
+
+    const handleStopFormSubmit = async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('access_token');
+        const requestData = {
+            place_stop: stopLocation,
+            user_id: userData.id,
+            travel_offer_id: id,
+            is_accepted: false,
+            created_at: new Date().toISOString()
+        };
+
+        try {
+            const response = await axios.post(`http://localhost:8000/api/offers/${id}/request-stop/`, requestData, {
+                headers: {
+                    'Authorization': `JWT ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            alert('Prośba o dodanie przystanku została wysłana.');
+            setShowStopForm(false);
+            setStopLocation('');
+        } catch (error) {
+            console.error('Wystąpił błąd podczas wysyłania prośby o dodanie przystanku:', error.response ? error.response.data : error.message);
         }
     };
 
@@ -162,6 +217,25 @@ const TravelOfferCard = ({offer}) => {
                     {renderSeats()}
                 </div>
             </CardContent>
+            {showStopForm && (
+                <CardContent>
+                    <form onSubmit={handleStopFormSubmit}>
+                        <TextField
+                            label="Lokalizacja przystanku"
+                            value={stopLocation}
+                            onChange={(e) => setStopLocation(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <Button type="submit" variant="contained" color="primary">
+                            Wyślij prośbę
+                        </Button>
+                        <Button onClick={() => setShowStopForm(false)} variant="outlined" color="secondary" style={{ marginLeft: '10px' }}>
+                            Anuluj
+                        </Button>
+                    </form>
+                </CardContent>
+            )}
             <GoogleMapDisplay origin={place_departure} destination={place_arrival}/>
         </Card>
     );

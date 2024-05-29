@@ -110,6 +110,26 @@ class TravelOfferManager(models.Manager):
             return travel_offer
         except TravelOffer.DoesNotExist:
             raise RestValidationError({"error": "Nie znaleziono takiej oferty"})
+        return travel_offer
+
+    def request_stop(self, user, travel_offer, place_stop):
+        stop_request = StopRequest.objects.create(
+            user=user,
+            travel_offer=travel_offer,
+            place_stop=place_stop
+        )
+        return stop_request
+
+    def accept_stop_request(self, stop_request_id):
+        stop_request = StopRequest.objects.get(id=stop_request_id)
+        stop_request.is_accepted = True
+        stop_request.save()
+
+        travel_offer = stop_request.travel_offer
+        travel_offer.place_arrival = stop_request.place_stop
+        travel_offer.save()
+        return stop_request
+
 
     def archive_travel_offer(self, id):
         try:
@@ -119,6 +139,7 @@ class TravelOfferManager(models.Manager):
             return travel_offer
         except TravelOffer.DoesNotExist:
             raise RestValidationError({"error": "Nie znaleziono takiej oferty"})
+
 
 class TravelOffer(models.Model):
     id = models.AutoField(primary_key=True)
@@ -137,3 +158,14 @@ class TravelOffer(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class StopRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    travel_offer = models.ForeignKey(TravelOffer, on_delete=models.CASCADE)
+    place_stop = models.CharField(max_length=255)
+    is_accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} requested stop at {self.place_stop}'

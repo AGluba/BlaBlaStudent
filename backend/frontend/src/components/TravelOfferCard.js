@@ -177,6 +177,11 @@ const TravelOfferCard = ({offer}) => {
                     <DeleteIcon fontSize="large"/>
                 </IconButton>
             );
+            seats.push(
+                <IconButton onClick={handleAddStopRequest} key="stop">
+                    <StopIcon fontSize="large" />
+                </IconButton>
+            );
         } else {
             seats.push(
                 <IconButton key="add" onClick={handleSeatToggle} disabled={userData.id === user_id}>

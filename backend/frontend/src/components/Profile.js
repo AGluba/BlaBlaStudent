@@ -420,7 +420,7 @@ const Profile = () => {
                         <TextField
                             margin="normal"
                             fullWidth
-                            label="Pojemność"
+                            label="Ilość miejsc w samochodzie"
                             name="capacity"
                             value={newCar.capacity}
                             onChange={handleCarChange}

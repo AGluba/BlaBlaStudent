@@ -110,7 +110,6 @@ class TravelOfferManager(models.Manager):
             return travel_offer
         except TravelOffer.DoesNotExist:
             raise RestValidationError({"error": "Nie znaleziono takiej oferty"})
-        return travel_offer
 
     def request_stop(self, user, travel_offer, place_stop):
         stop_request = StopRequest.objects.create(

@@ -1,7 +1,12 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from .models import TravelOffer
+from .models import TravelOffer, StopRequest
 
+
+class StopRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StopRequest
+        fields = ['id', 'user', 'travel_offer', 'place_stop', 'is_accepted', 'created_at']
 class TravelOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = TravelOffer

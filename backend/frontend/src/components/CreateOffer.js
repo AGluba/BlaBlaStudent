@@ -110,21 +110,21 @@ export default function CreateOfferForm() {
                                     <TextField
                                         required
                                         fullWidth
-                                        name="phone_number"
-                                        label="Numer telefonu"
-                                        type="tel"
-                                        error={!!errors.phone_number}
-                                        helperText={errors.phone_number && errors.phone_number[0]}
+                                        name="place_arrival"
+                                        label="Miejsce przyjazdu"
+                                        error={!!errors.place_arrival}
+                                        helperText={errors.place_arrival && errors.place_arrival[0]}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         required
                                         fullWidth
-                                        name="place_arrival"
-                                        label="Miejsce przyjazdu"
-                                        error={!!errors.place_arrival}
-                                        helperText={errors.place_arrival && errors.place_arrival[0]}
+                                        name="phone_number"
+                                        label="Numer telefonu"
+                                        type="tel"
+                                        error={!!errors.phone_number}
+                                        helperText={errors.phone_number && errors.phone_number[0]}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
